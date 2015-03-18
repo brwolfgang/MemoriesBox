@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.sql.SQLException;
 
@@ -11,6 +12,9 @@ import java.sql.SQLException;
  * Created by Wolfgang Marcos on 17/03/2015.
  */
 public class MemoriesDataSource {
+
+  private static final String TAG = "MemoryDataSource";
+
   private SQLiteDatabase database;
   private DatabaseUtil dbUtil;
   private String[] allColumns = {DatabaseUtil.COLUMN_ID,
@@ -50,7 +54,14 @@ public class MemoriesDataSource {
     Memory retrievedMemory = cursorToMemory(cursor);
 
     cursor.close();
+
+    Log.i(TAG, "Memory id: " + memoryId + " retrieved");
     return retrievedMemory;
+  }
+
+  public void deleteMemory (Memory memory){
+    database.delete(DatabaseUtil.TABLE_NAME,DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
+    Log.i(TAG, "Memory id: " + memory.getId() + " deleted");
   }
 
   private Memory cursorToMemory(Cursor cursor){
@@ -60,6 +71,7 @@ public class MemoriesDataSource {
     memory.setContent(cursor.getString(2));
     memory.setCreation_date(cursor.getString(3));
 
+    Log.i(TAG, "Cursor to Memory performed - Title: " + memory.getTitle());
     return memory;
   }
 }
