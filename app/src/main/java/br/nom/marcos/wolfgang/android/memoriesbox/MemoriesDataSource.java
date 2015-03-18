@@ -41,8 +41,10 @@ public class MemoriesDataSource {
     memoryContentValues.put(DatabaseUtil.COLUMN_CREATION_DATE, creationDate);
 
     long insertID = database.insert(DatabaseUtil.TABLE_NAME, null, memoryContentValues);
+    Memory createdMemory = retrieveMemory(insertID);
 
-    return retrieveMemory(insertID);
+    Log.i(TAG, "Memory created id: " + createdMemory.getId());
+    return createdMemory;
   }
 
   public Memory retrieveMemory(long memoryId){
@@ -75,7 +77,7 @@ public class MemoriesDataSource {
     return memory;
   }
 
-  private Memory updateMemory(Memory memory){
+  public Memory updateMemory(Memory memory){
     ContentValues updateValues = new ContentValues();
     updateValues.put(DatabaseUtil.COLUMN_TITLE, memory.getTitle());
     updateValues.put(DatabaseUtil.COLUMN_CONTENT, memory.getContent());
