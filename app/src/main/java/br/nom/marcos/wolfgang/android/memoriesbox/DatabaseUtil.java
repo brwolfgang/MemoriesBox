@@ -33,11 +33,13 @@ public class DatabaseUtil extends SQLiteOpenHelper{
   @Override
   public void onCreate(SQLiteDatabase db) {
     try {
+      Log.i(TAG, "Going to execute: " + DATABASE_CREATE);
       db.execSQL(DATABASE_CREATE);
       Log.i(TAG, "Database " + TABLE_NAME + " created successfully");
     } catch (SQLException e) {
       Log.i(TAG, "Database " + TABLE_NAME + " creation failed");
       e.printStackTrace();
+      System.err.println(e.getCause() == null ? "No cause was given" : e.getCause());
     }
   }
 
