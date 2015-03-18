@@ -9,4 +9,5 @@
     <string name="memories_list_item_title">Memory Title Example</string>
     <string name="memories_list_item_date">22/03/1991</string>
     <string name="memories_list_item_content">This is a Memory content example</string>
+    <string name="title_activity_memory_viewer">Memory Viewer</string>
 </resources>

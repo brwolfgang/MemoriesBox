@@ -13,14 +13,19 @@ import android.widget.Toast;
 import java.sql.SQLException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MemoryViewer extends ActionBarActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_memory_viewer);
 
     initResources();
+
+    this.memory = (Memory) getIntent().getExtras().get("memory");
+
+    if(memory != null)
+      loadMemoryData();
   }
 
 
@@ -61,6 +66,23 @@ public class MainActivity extends ActionBarActivity {
 
   private void initResources(){
     this.initDatabase();
+
+    memoryTitle = (EditText) findViewById(R.id.main_edit_title);
+    memoryContent = (EditText) findViewById(R.id.main_edit_content);
+    memoryButtonSave = (Button) findViewById(R.id.main_button_save);
+
+    memoryButtonSave.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        String title = memoryTitle.getText().toString();
+        String content = memoryContent.getText().toString();
+
+        if(title.length() > 0 && content.length() > 0){
+          Memory tempMemory = mds.createMemory(title, content, "HARDCODED");
+          Toast.makeText(getApplicationContext(), "Memory created: " + tempMemory.getTitle(), Toast.LENGTH_SHORT).show();
+        }
+      }
+    });
   }
 
   private void initDatabase(){
@@ -74,6 +96,15 @@ public class MainActivity extends ActionBarActivity {
     }
   }
 
-  private static final String TAG = "MainActivity";
-  MemoriesDataSource mds;
+  private void loadMemoryData(){
+    this.memoryTitle.setText(memory.getTitle());
+    this.memoryContent.setText(memory.getContent());
+  }
+
+  private static final String TAG = "MemoryViewerActivity";
+  private EditText memoryTitle;
+  private EditText memoryContent;
+  private Button memoryButtonSave;
+  private MemoriesDataSource mds;
+  private Memory memory;
 }
