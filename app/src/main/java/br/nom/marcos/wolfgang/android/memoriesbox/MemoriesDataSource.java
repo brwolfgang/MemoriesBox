@@ -60,7 +60,7 @@ public class MemoriesDataSource {
   }
 
   public void deleteMemory (Memory memory){
-    database.delete(DatabaseUtil.TABLE_NAME,DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
+    database.delete(DatabaseUtil.TABLE_NAME, DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
     Log.i(TAG, "Memory id: " + memory.getId() + " deleted");
   }
 
@@ -71,7 +71,20 @@ public class MemoriesDataSource {
     memory.setContent(cursor.getString(2));
     memory.setCreation_date(cursor.getString(3));
 
-    Log.i(TAG, "Cursor to Memory performed - Title: " + memory.getTitle());
+    Log.i(TAG, "Cursor to Memory performed id: " + memory.getId());
     return memory;
+  }
+
+  private Memory updateMemory(Memory memory){
+    ContentValues updateValues = new ContentValues();
+    updateValues.put(DatabaseUtil.COLUMN_TITLE, memory.getTitle());
+    updateValues.put(DatabaseUtil.COLUMN_CONTENT, memory.getContent());
+    updateValues.put(DatabaseUtil.COLUMN_CREATION_DATE, memory.getCreation_date());
+
+    database.update(DatabaseUtil.TABLE_NAME, updateValues,
+          DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
+
+    Log.i(TAG, "Memory id: " + memory.getId() + " updated");
+    return retrieveMemory(memory.getId());
   }
 }
