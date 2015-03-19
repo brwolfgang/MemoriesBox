@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MemoryViewer"
+            android:name=".MemoryDetailsViewer"
             android:label="@string/title_activity_memory_viewer" >
         </activity>
     </application>

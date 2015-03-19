@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.sql.SQLException;
 
 
-public class MemoryViewer extends ActionBarActivity {
+public class MemoryDetailsViewer extends ActionBarActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +22,11 @@ public class MemoryViewer extends ActionBarActivity {
 
     initResources();
 
-    this.memory = (Memory) getIntent().getExtras().get("memory");
-
-    if(memory != null)
+    Bundle extras = getIntent().getExtras();
+    if(extras != null) {
+      this.memory = (Memory) getIntent().getExtras().get("memory");
       loadMemoryData();
+    }
   }
 
 
@@ -59,8 +60,8 @@ public class MemoryViewer extends ActionBarActivity {
   }
 
   @Override
-  protected void onPostResume() {
-    super.onPostResume();
+  protected void onRestart() {
+    super.onRestart();
     this.initDatabase();
   }
 
