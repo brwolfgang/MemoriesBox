@@ -61,6 +61,12 @@ public class MemoriesDataSource {
     return retrievedMemory;
   }
 
+  public Cursor getAllMemories(){
+    Cursor cursor = database.query(DatabaseUtil.TABLE_NAME, allColumns, null,null,null,null,null);
+    cursor.moveToFirst();
+    return cursor;
+  }
+
   public void deleteMemory (Memory memory){
     database.delete(DatabaseUtil.TABLE_NAME, DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
     Log.i(TAG, "Memory id: " + memory.getId() + " deleted");
@@ -88,5 +94,9 @@ public class MemoriesDataSource {
 
     Log.i(TAG, "Memory id: " + memory.getId() + " updated");
     return retrieveMemory(memory.getId());
+  }
+
+  public void dropMemoriesTable(){
+    database.execSQL("drop table " + DatabaseUtil.TABLE_NAME);
   }
 }
