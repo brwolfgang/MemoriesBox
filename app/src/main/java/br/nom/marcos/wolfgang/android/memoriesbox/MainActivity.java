@@ -9,13 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import java.sql.SQLException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MemoriesRetrieveTask.TaskConclusionListener{
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +34,8 @@ public class MainActivity extends ActionBarActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
       return true;
     }
@@ -64,18 +59,17 @@ public class MainActivity extends ActionBarActivity {
     this.initDatabase();
     this.memoryListView = (ListView) findViewById(R.id.main_memory_list_view);
 
-    Cursor memoryCursor = mds.getAllMemories();
+    new MemoriesRetrieveTask(this).execute(mds);
 
-    CursorAdapter cursorAdapter = new MemoriesListAdapter(this,
-          memoryCursor, MemoriesListAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    initMemoriesAdapter();
 
-    memoryListView.setAdapter(cursorAdapter);
+    memoryListView.setAdapter(memoriesAdapter);
 
     Button button = (Button) findViewById(R.id.main_add_memory);
     button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(getApplicationContext(),MemoryDetailsViewer.class);
+        Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
         startActivity(intent);
       }
     });
@@ -92,8 +86,28 @@ public class MainActivity extends ActionBarActivity {
     }
   }
 
+  private void initMemoriesAdapter(){
+    String[] columnsFrom = {
+        DatabaseUtil.COLUMN_TITLE,
+        DatabaseUtil.COLUMN_CREATION_DATE,
+        DatabaseUtil.COLUMN_CONTENT};
+
+    int[] viewsTo = {
+          R.id.memories_list_item_title,
+          R.id.memories_list_item_date,
+          R.id.memories_list_item_content};
+
+    memoriesAdapter = new MemoriesListAdapter(this, R.layout.memories_list_item,
+          null, columnsFrom, viewsTo, MemoriesListAdapter.NO_SELECTION);
+  }
+
   private static final String TAG = "MainActivity";
   private MemoriesDataSource mds;
   private ListView memoryListView;
+  private MemoriesListAdapter memoriesAdapter;
 
+  @Override
+  public void onPostExecute(Cursor cursor) {
+    memoriesAdapter.changeCursor(cursor);
+  }
 }
