@@ -26,16 +26,18 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == NEW_MEMORY) {
-      if (resultCode == RESULT_OK) {
-        new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
-      }if (resultCode == RESULT_CANCELED)
-        Log.i(TAG, "Something went wrong when creating a new memory");
-    }else if (requestCode == EDIT_MEMORY){
-      if (resultCode == RESULT_OK)
-        memoriesAdapter.notifyDataSetChanged();
-      if (resultCode == RESULT_CANCELED)
-        Log.i(TAG, "Something went wrong when editing a memory");
+
+    switch (requestCode){
+      case NEW_MEMORY:
+        if (resultCode == RESULT_OK) {
+          new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
+          break;
+        }
+      case EDIT_MEMORY:
+        if (resultCode == RESULT_OK) {
+          new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
+          break;
+        }
     }
   }
 
