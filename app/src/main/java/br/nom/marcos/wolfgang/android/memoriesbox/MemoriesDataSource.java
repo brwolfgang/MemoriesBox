@@ -81,7 +81,7 @@ public class MemoriesDataSource {
     Log.i(TAG, "Memory id: " + memory.getId() + " deleted");
   }
 
-  private Memory cursorToMemory(Cursor cursor){
+  public Memory cursorToMemory(Cursor cursor){
     Memory memory = new Memory();
     memory.setId(cursor.getLong(0));
     memory.setTitle(cursor.getString(1));
