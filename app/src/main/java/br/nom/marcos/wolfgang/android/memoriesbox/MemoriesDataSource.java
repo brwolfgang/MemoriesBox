@@ -15,6 +15,8 @@ public class MemoriesDataSource {
 
   private static final String TAG = "MemoryDataSource";
 
+  private static MemoriesDataSource mds;
+
   private SQLiteDatabase database;
   private DatabaseUtil dbUtil;
   private String[] allColumns = {DatabaseUtil.COLUMN_ID,
@@ -22,7 +24,14 @@ public class MemoriesDataSource {
       DatabaseUtil.COLUMN_CONTENT,
       DatabaseUtil.COLUMN_CREATION_DATE};
 
-  public MemoriesDataSource(Context context) {
+  public static MemoriesDataSource getInstance(Context context){
+    if(mds == null)
+      mds = new MemoriesDataSource(context);
+
+    return mds;
+  }
+
+  private MemoriesDataSource(Context context) {
     dbUtil = new DatabaseUtil(context);
   }
 
