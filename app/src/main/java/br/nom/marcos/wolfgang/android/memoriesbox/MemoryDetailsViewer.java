@@ -66,6 +66,5 @@ public class MemoryDetailsViewer extends ActionBarActivity {
   private EditText memoryTitle;
   private EditText memoryContent;
   private Button memoryButtonSave;
-  private MemoriesDataSource mds;
   private Memory memory;
 }
