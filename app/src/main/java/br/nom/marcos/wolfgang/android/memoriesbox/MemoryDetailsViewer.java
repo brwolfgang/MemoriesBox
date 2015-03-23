@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 public class MemoryDetailsViewer extends ActionBarActivity {
 
   @Override
@@ -25,7 +24,7 @@ public class MemoryDetailsViewer extends ActionBarActivity {
     }
   }
 
-  private void initResources(){
+  private void initResources() {
     memoryTitle = (EditText) findViewById(R.id.main_edit_title);
     memoryContent = (EditText) findViewById(R.id.main_edit_content);
     memoryButtonSave = (Button) findViewById(R.id.main_button_save);
@@ -37,25 +36,27 @@ public class MemoryDetailsViewer extends ActionBarActivity {
         String content = memoryContent.getText().toString();
 
         if (title.length() > 0 && content.length() > 0) {
-          Memory tempMemory = MemoriesDataSource.getInstance(getApplicationContext()).createMemory(title, content, "HARDCODED");
-          if (tempMemory != null) {
-            Toast.makeText(getApplicationContext(), "Memory created: " + tempMemory.getTitle(), Toast.LENGTH_SHORT).show();
-            if(getParent() != null) {
-              getParent().setResult(Activity.RESULT_OK);
-              finish();
-            }else{
+          if (memory == null) {
+            memory = MemoriesDataSource.getInstance(getApplicationContext()).createMemory(title, content, "HARDCODED");
+            if (memory != null) {
+              Toast.makeText(getApplicationContext(), "Memory created: " + memory.getTitle(), Toast.LENGTH_SHORT).show();
               setResult(Activity.RESULT_OK);
               finish();
             }
-          }
-          else {
-            Toast.makeText(getApplicationContext(), "Error on Memory creation =/", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_CANCELED);
+          }else{
+            memory.setTitle(title);
+            memory.setContent(content);
+            memory = MemoriesDataSource.getInstance(getApplicationContext()).updateMemory(memory);
+
+            Toast.makeText(getApplicationContext(), "Memory updated: " + memory.getTitle(), Toast.LENGTH_SHORT).show();
+
+            setResult(Activity.RESULT_OK);
+            finish();
           }
         }
       }
     });
-  }
+    }
 
   private void loadMemoryData(){
     this.memoryTitle.setText(memory.getTitle());
