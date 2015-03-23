@@ -20,7 +20,7 @@ public class MemoryDetailsViewer extends ActionBarActivity {
 
     Bundle extras = getIntent().getExtras();
     if(extras != null) {
-      this.memory = (Memory) getIntent().getExtras().get("memory");
+      this.memory = MemoriesDataSource.getInstance(this).retrieveMemory((Long) extras.get("memoryID"));
       loadMemoryData();
     }
   }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -59,6 +60,15 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
     initMemoriesAdapter();
 
     memoryListView.setAdapter(memoriesAdapter);
+
+    memoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
+        intent.putExtra("memoryID", id);
+        startActivityForResult(intent, EDIT_MEMORY);
+      }
+    });
 
     Button button = (Button) findViewById(R.id.main_add_memory);
     button.setOnClickListener(new View.OnClickListener() {
