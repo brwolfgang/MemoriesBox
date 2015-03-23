@@ -15,7 +15,7 @@
             android:paddingTop="3dp"
             android:paddingLeft="3dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center_horizontal"
+            android:gravity="left"
             android:text="@string/memories_list_item_title"
             android:layout_weight="1"
             android:id="@+id/memories_list_item_title"/>
