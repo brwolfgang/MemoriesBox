@@ -23,22 +23,38 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
   }
 
   @Override
-  protected void onPause() {
-    super.onPause();
-    mds.close();
-    Log.i(TAG, "Database closed");
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == NEW_MEMORY) {
+      if (resultCode == RESULT_OK) {
+        new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
+      }if (resultCode == RESULT_CANCELED)
+        Log.i(TAG, "Something went wrong when creating a new memory");
+    }else if (requestCode == EDIT_MEMORY){
+      if (resultCode == RESULT_OK)
+        memoriesAdapter.notifyDataSetChanged();
+      if (resultCode == RESULT_CANCELED)
+        Log.i(TAG, "Something went wrong when editing a memory");
+    }
   }
 
   @Override
-  protected void onPostResume() {
-    super.onPostResume();
+  protected void onDestroy() {
+    super.onDestroy();
+    MemoriesDataSource.getInstance(this).close();
+  }
+
+  @Override
+  public void onPostExecute(Cursor cursor) {
+    memoriesAdapter.changeCursor(cursor);
+    memoriesAdapter.notifyDataSetChanged();
   }
 
   private void initResources(){
     this.initDatabase();
     this.memoryListView = (ListView) findViewById(R.id.main_memory_list_view);
 
-    new MemoriesRetrieveTask(this).execute(mds);
+    new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
 
     initMemoriesAdapter();
 
@@ -49,15 +65,14 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
       @Override
       public void onClick(View v) {
         Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
-        startActivity(intent);
+        startActivityForResult(intent, NEW_MEMORY);
       }
     });
   }
 
   private void initDatabase(){
     try {
-      mds = new MemoriesDataSource(this);
-      mds.open();
+      MemoriesDataSource.getInstance(this).open();
       Log.i(TAG, "Database opened");
     } catch (SQLException e) {
       e.printStackTrace();
@@ -67,9 +82,9 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
 
   private void initMemoriesAdapter(){
     String[] columnsFrom = {
-        DatabaseUtil.COLUMN_TITLE,
-        DatabaseUtil.COLUMN_CREATION_DATE,
-        DatabaseUtil.COLUMN_CONTENT};
+          DatabaseUtil.COLUMN_TITLE,
+          DatabaseUtil.COLUMN_CREATION_DATE,
+          DatabaseUtil.COLUMN_CONTENT};
 
     int[] viewsTo = {
           R.id.memories_list_item_title,
@@ -77,16 +92,12 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
           R.id.memories_list_item_content};
 
     memoriesAdapter = new MemoriesListAdapter(this, R.layout.memories_list_item,
-          null, columnsFrom, viewsTo, MemoriesListAdapter.NO_SELECTION);
+          null, columnsFrom, viewsTo, MemoriesListAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
   }
 
   private static final String TAG = "MainActivity";
-  private MemoriesDataSource mds;
   private ListView memoryListView;
   private MemoriesListAdapter memoriesAdapter;
-
-  @Override
-  public void onPostExecute(Cursor cursor) {
-    memoriesAdapter.changeCursor(cursor);
-  }
+  private final int NEW_MEMORY = 000;
+  private final int EDIT_MEMORY = 001;
 }
