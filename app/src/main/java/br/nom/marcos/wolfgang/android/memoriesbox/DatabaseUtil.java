@@ -17,14 +17,16 @@ public class DatabaseUtil extends SQLiteOpenHelper{
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_TITLE = "title";
   public static final String COLUMN_CONTENT = "content";
-  public static final String COLUMN_CREATION_DATE = "creation_date";
+  public static final String COLUMN_DATE = "date";
+  public static final String COLUMN_TIME = "time";
 
   private static final String DATABASE_CREATE = "create table "
         + TABLE_NAME + "("
         + COLUMN_ID + " integer primary key autoincrement, "
         + COLUMN_TITLE + " text not null, "
         + COLUMN_CONTENT + " text not null, "
-        + COLUMN_CREATION_DATE + " text not null);";
+        + COLUMN_DATE + " text not null, "
+        + COLUMN_TIME + " text not null);";
 
   public DatabaseUtil(Context context) {
     super(context, TABLE_NAME, null, 1);
