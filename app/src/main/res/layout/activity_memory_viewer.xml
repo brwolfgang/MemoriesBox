@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:text="12:00"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/memory_viewer_button_pick_hour"
+            android:id="@+id/memory_viewer_hour"
             android:paddingRight="5dp"/>
 
         <TextView
