@@ -43,8 +43,8 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     MemoriesDataSource.getInstance(this).close();
+    super.onDestroy();
   }
 
   @Override
@@ -95,7 +95,7 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
   private void initMemoriesAdapter(){
     String[] columnsFrom = {
           DatabaseUtil.COLUMN_TITLE,
-          DatabaseUtil.COLUMN_CREATION_DATE,
+          DatabaseUtil.COLUMN_DATE,
           DatabaseUtil.COLUMN_CONTENT};
 
     int[] viewsTo = {
