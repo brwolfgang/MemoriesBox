@@ -4,10 +4,11 @@
     <string name="main_description_title">Memory Title</string>
     <string name="main_description_content">Memory Description</string>
     <string name="action_settings">Settings</string>
-    <string name="main_button_save">Save Memory</string>
+    <string name="memory_viewer_button_save">Save Memory</string>
 
     <string name="memories_list_item_title">Memory Title Example</string>
     <string name="memories_list_item_date">22/03/1991</string>
     <string name="memories_list_item_content">This is a Memory content example</string>
     <string name="title_activity_memory_viewer">Memory Viewer</string>
+    <string name="memory_viewer_pick_date">Pick date</string>
 </resources>
