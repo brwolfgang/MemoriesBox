@@ -7,7 +7,8 @@ public class Memory {
   private long id;
   private String title;
   private String content;
-  private String creation_date;
+  private String date;
+  private String time;
 
   public long getId() {
     return id;
@@ -33,11 +34,19 @@ public class Memory {
     this.content = content;
   }
 
-  public String getCreation_date() {
-    return creation_date;
+  public String getDate() {
+    return date;
   }
 
-  public void setCreation_date(String creation_date) {
-    this.creation_date = creation_date;
+  public void setDate(String date) {
+    this.date = date;
+  }
+
+  public String getTime() {
+    return time;
+  }
+
+  public void setTime(String time) {
+    this.time = time;
   }
 }
