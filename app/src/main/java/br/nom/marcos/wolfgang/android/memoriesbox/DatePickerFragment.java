@@ -5,14 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.widget.DatePicker;
 
 import java.util.Calendar;
 
 /**
  * Created by Wolfgang Marcos on 23/03/2015.
  */
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+public class DatePickerFragment extends DialogFragment{
 
   DatePickerDialog.OnDateSetListener listener;
 
@@ -29,12 +28,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     int month = calendar.get(Calendar.MONTH);
     int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-    return new DatePickerDialog(getActivity(), this, year, month, day);
-  }
-
-  @Override
-  public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-    monthOfYear += 1;
-    listener.onDateSet(view, year, monthOfYear, dayOfMonth);
+    return new DatePickerDialog(getActivity(), listener, year, month, day);
   }
 }
