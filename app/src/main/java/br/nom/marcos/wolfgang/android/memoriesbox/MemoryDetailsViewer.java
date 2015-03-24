@@ -77,7 +77,7 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
 
         if (title.length() > 0 && content.length() > 0) {
           if (memory == null) {
-            memory = MemoriesDataSource.getInstance(getApplicationContext()).createMemory(title, content, date);
+            memory = MemoriesDataSource.getInstance(getApplicationContext()).createMemory(title, content, date, time);
             if (memory != null) {
               Toast.makeText(getApplicationContext(), "Memory created: " + memory.getTitle(), Toast.LENGTH_SHORT).show();
               setResult(Activity.RESULT_OK);
@@ -86,7 +86,8 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
           }else{
             memory.setTitle(title);
             memory.setContent(content);
-            memory.setCreation_date(date + "-" + time);
+            memory.setDate(date);
+            memory.setTime(time);
             memory = MemoriesDataSource.getInstance(getApplicationContext()).updateMemory(memory);
 
             Toast.makeText(getApplicationContext(), "Memory updated: " + memory.getTitle(), Toast.LENGTH_SHORT).show();
@@ -102,8 +103,8 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
   private void loadMemoryData(){
     this.memoryTitle.setText(memory.getTitle());
     this.memoryContent.setText(memory.getContent());
-    this.memoryDate.setText(memory.getCreation_date().substring(0,memory.getCreation_date().indexOf("-")));
-    this.memoryTime.setText(memory.getCreation_date().substring(memory.getCreation_date().indexOf("-") + 1,memory.getCreation_date().length()));
+    this.memoryDate.setText(memory.getDate());
+    this.memoryTime.setText(memory.getTime());
   }
 
   private String getCurrentDate(){
