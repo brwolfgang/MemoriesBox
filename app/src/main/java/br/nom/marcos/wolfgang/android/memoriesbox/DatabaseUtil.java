@@ -13,7 +13,7 @@ public class DatabaseUtil extends SQLiteOpenHelper{
 
   private static final String TAG = "DatabaseUtil";
 
-  public static final String TABLE_NAME = "memories_table";
+  public static final String TABLE_NAME = "memory";
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_TITLE = "title";
   public static final String COLUMN_CONTENT = "content";
