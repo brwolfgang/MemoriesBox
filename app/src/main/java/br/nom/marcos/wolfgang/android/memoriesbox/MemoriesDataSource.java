@@ -110,6 +110,12 @@ public class MemoriesDataSource {
   }
 
   public void dropMemoriesTable(){
-    database.execSQL("drop table " + DatabaseUtil.TABLE_NAME);
+    try {
+      open();
+      database.execSQL("drop table " + DatabaseUtil.TABLE_NAME);
+      close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
 }
