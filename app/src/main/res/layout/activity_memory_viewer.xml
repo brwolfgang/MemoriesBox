@@ -21,7 +21,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_edit_title"
+        android:id="@+id/memory_viewer_edit_title"
         android:layout_below="@+id/main_description_title"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/main_edit_title"
+        android:layout_below="@+id/memory_viewer_edit_title"
         android:layout_centerHorizontal="true"/>
 
     <EditText
@@ -42,18 +42,46 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/main_edit_content"
+        android:id="@+id/memory_viewer_edit_content"
         android:layout_below="@+id/main_description_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/main_edit_title"
-        android:layout_alignEnd="@+id/main_edit_title"/>
+        android:layout_alignRight="@+id/memory_viewer_edit_title"
+        android:layout_alignEnd="@+id/memory_viewer_edit_title"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/memory_viewer_edit_content"
+        android:id="@+id/memory_viewer_date_pick_group"
+        android:gravity="center_horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:00"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/memory_viewer_button_pick_hour"
+            android:paddingRight="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01/01/2015"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/memory_viewer_date"
+            android:paddingLeft="5dp"/>
+
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_button_save"
-        android:id="@+id/main_button_save"
-        android:layout_below="@+id/main_edit_content"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/memory_viewer_button_save"
+        android:id="@+id/memory_viewer_button_save"
+        android:layout_below="@+id/memory_viewer_date_pick_group"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="5dp"/>
 </RelativeLayout>
