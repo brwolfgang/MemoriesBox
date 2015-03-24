@@ -22,7 +22,8 @@ public class MemoriesDataSource {
   private String[] allColumns = {DatabaseUtil.COLUMN_ID,
       DatabaseUtil.COLUMN_TITLE,
       DatabaseUtil.COLUMN_CONTENT,
-      DatabaseUtil.COLUMN_CREATION_DATE};
+      DatabaseUtil.COLUMN_DATE,
+      DatabaseUtil.COLUMN_TIME};
 
   public static MemoriesDataSource getInstance(Context context){
     if(mds == null)
@@ -43,11 +44,12 @@ public class MemoriesDataSource {
     dbUtil.close();
   }
 
-  public Memory createMemory(String title, String content, String creationDate){
+  public Memory createMemory(String title, String content, String date, String time){
     ContentValues memoryContentValues = new ContentValues();
     memoryContentValues.put(DatabaseUtil.COLUMN_TITLE, title);
     memoryContentValues.put(DatabaseUtil.COLUMN_CONTENT, content);
-    memoryContentValues.put(DatabaseUtil.COLUMN_CREATION_DATE, creationDate);
+    memoryContentValues.put(DatabaseUtil.COLUMN_DATE, date);
+    memoryContentValues.put(DatabaseUtil.COLUMN_TIME, time);
 
     long insertID = database.insert(DatabaseUtil.TABLE_NAME, null, memoryContentValues);
     Memory createdMemory = retrieveMemory(insertID);
@@ -86,7 +88,8 @@ public class MemoriesDataSource {
     memory.setId(cursor.getLong(0));
     memory.setTitle(cursor.getString(1));
     memory.setContent(cursor.getString(2));
-    memory.setCreation_date(cursor.getString(3));
+    memory.setDate(cursor.getString(3));
+    memory.setTime(cursor.getString(4));
 
     Log.i(TAG, "Cursor to Memory performed id: " + memory.getId());
     return memory;
@@ -96,7 +99,8 @@ public class MemoriesDataSource {
     ContentValues updateValues = new ContentValues();
     updateValues.put(DatabaseUtil.COLUMN_TITLE, memory.getTitle());
     updateValues.put(DatabaseUtil.COLUMN_CONTENT, memory.getContent());
-    updateValues.put(DatabaseUtil.COLUMN_CREATION_DATE, memory.getCreation_date());
+    updateValues.put(DatabaseUtil.COLUMN_DATE, memory.getDate());
+    updateValues.put(DatabaseUtil.COLUMN_TIME, memory.getTime());
 
     database.update(DatabaseUtil.TABLE_NAME, updateValues,
           DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
