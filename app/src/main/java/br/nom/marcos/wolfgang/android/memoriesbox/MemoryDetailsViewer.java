@@ -40,8 +40,18 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
 
   @Override
   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    String time = hourOfDay + ":" + minute;
-    memoryTime.setText(time);
+    memoryTime.setText(getFormattedTime(hourOfDay, minute));
+  }
+
+  private String getFormattedTime(int hour, int minute){
+    String formattedTime;
+
+    if (minute < 10)
+      formattedTime = hour + ":0" + minute;
+    else
+      formattedTime = hour + ":" + minute;
+
+    return formattedTime;
   }
 
   private void initResources() {
@@ -119,11 +129,10 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
 
   private String getCurrentTime(){
     Calendar calendar = Calendar.getInstance();
-    String currentTime =
-          calendar.get(Calendar.HOUR_OF_DAY) + ":" +
-          calendar.get(Calendar.MINUTE);
 
-    return currentTime;
+    return getFormattedTime(
+          calendar.get(Calendar.HOUR_OF_DAY),
+          calendar.get(Calendar.MINUTE));
   }
 
   private static final String TAG = "MemoryViewerActivity";
