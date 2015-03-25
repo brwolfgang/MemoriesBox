@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -58,6 +59,16 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
     return super.onCreateOptionsMenu(menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()){
+      case R.id.main_action_add_memory:
+        Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
+        startActivityForResult(intent, NEW_MEMORY);}
+
+    return super.onOptionsItemSelected(item);
   }
 
   private void initResources(){
