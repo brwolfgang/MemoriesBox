@@ -7,14 +7,5 @@
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/main_memory_list_view"
-        />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="New Button"
-        android:id="@+id/main_add_memory"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:id="@+id/main_memory_list_view"/>
 </RelativeLayout>

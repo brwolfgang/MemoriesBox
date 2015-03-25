@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.sql.SQLException;
@@ -87,15 +86,6 @@ public class MainActivity extends ActionBarActivity implements MemoriesRetrieveT
         Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
         intent.putExtra("memoryID", id);
         startActivityForResult(intent, EDIT_MEMORY);
-      }
-    });
-
-    Button button = (Button) findViewById(R.id.main_add_memory);
-    button.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent intent = new Intent(getApplicationContext(), MemoryDetailsViewer.class);
-        startActivityForResult(intent, NEW_MEMORY);
       }
     });
   }
