@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:memoriesbox="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/main_action_edit"
+          android:icon="@drawable/ic_action_edit"
+          android:title="@string/main_action_mode_edit"
+          memoriesbox:showAsAction="ifRoom"/>
+    <item android:id="@+id/main_action_delete"
+          android:icon="@drawable/ic_action_discard"
+          android:title="@string/main_action_mode_delete"
+          memoriesbox:showAsAction="ifRoom"/>
+</menu>

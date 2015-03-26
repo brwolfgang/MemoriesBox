@@ -11,4 +11,6 @@
     <string name="memories_list_item_content">This is a Memory content example</string>
     <string name="title_activity_memory_viewer">Memory Viewer</string>
     <string name="memory_viewer_pick_date">Pick date</string>
+    <string name="main_action_mode_edit">Edit</string>
+    <string name="main_action_mode_delete">Delete</string>
 </resources>
