@@ -20,31 +20,31 @@ public class MemoriesDataSource {
   private SQLiteDatabase database;
   private DatabaseUtil dbUtil;
   private String[] allColumns = {DatabaseUtil.COLUMN_ID,
-      DatabaseUtil.COLUMN_TITLE,
-      DatabaseUtil.COLUMN_CONTENT,
-      DatabaseUtil.COLUMN_DATE,
-      DatabaseUtil.COLUMN_TIME};
-
-  public static MemoriesDataSource getInstance(Context context){
-    if(mds == null)
-      mds = new MemoriesDataSource(context);
-
-    return mds;
-  }
+        DatabaseUtil.COLUMN_TITLE,
+        DatabaseUtil.COLUMN_CONTENT,
+        DatabaseUtil.COLUMN_DATE,
+        DatabaseUtil.COLUMN_TIME};
 
   private MemoriesDataSource(Context context) {
     dbUtil = new DatabaseUtil(context);
   }
 
-  public void open() throws SQLException{
+  public static MemoriesDataSource getInstance(Context context) {
+    if (mds == null)
+      mds = new MemoriesDataSource(context);
+
+    return mds;
+  }
+
+  public void open() throws SQLException {
     database = dbUtil.getWritableDatabase();
   }
 
-  public void close(){
+  public void close() {
     dbUtil.close();
   }
 
-  public Memory createMemory(String title, String content, String date, String time){
+  public Memory createMemory(String title, String content, String date, String time) {
     ContentValues memoryContentValues = new ContentValues();
     memoryContentValues.put(DatabaseUtil.COLUMN_TITLE, title);
     memoryContentValues.put(DatabaseUtil.COLUMN_CONTENT, content);
@@ -58,10 +58,10 @@ public class MemoriesDataSource {
     return createdMemory;
   }
 
-  public Memory retrieveMemory(long memoryId){
+  public Memory retrieveMemory(long memoryId) {
     Cursor cursor = database.query(DatabaseUtil.TABLE_NAME,
           allColumns, DatabaseUtil.COLUMN_ID + " = " + memoryId,
-          null,null,null,null);
+          null, null, null, null);
 
     cursor.moveToFirst();
     Memory retrievedMemory = cursorToMemory(cursor);
@@ -72,18 +72,18 @@ public class MemoriesDataSource {
     return retrievedMemory;
   }
 
-  public Cursor getAllMemories(){
-    Cursor cursor = database.query(DatabaseUtil.TABLE_NAME, allColumns, null,null,null,null,null);
+  public Cursor getAllMemories() {
+    Cursor cursor = database.query(DatabaseUtil.TABLE_NAME, allColumns, null, null, null, null, null);
     cursor.moveToFirst();
     return cursor;
   }
 
-  public void deleteMemory (Memory memory){
-    database.delete(DatabaseUtil.TABLE_NAME, DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
-    Log.i(TAG, "Memory id: " + memory.getId() + " deleted");
+  public void deleteMemory(Long memoryID) {
+    database.delete(DatabaseUtil.TABLE_NAME, DatabaseUtil.COLUMN_ID + " = " + memoryID, null);
+    Log.i(TAG, "Memory id " + memoryID + " deleted");
   }
 
-  public Memory cursorToMemory(Cursor cursor){
+  public Memory cursorToMemory(Cursor cursor) {
     Memory memory = new Memory();
     memory.setId(cursor.getLong(0));
     memory.setTitle(cursor.getString(1));
@@ -95,7 +95,7 @@ public class MemoriesDataSource {
     return memory;
   }
 
-  public Memory updateMemory(Memory memory){
+  public Memory updateMemory(Memory memory) {
     ContentValues updateValues = new ContentValues();
     updateValues.put(DatabaseUtil.COLUMN_TITLE, memory.getTitle());
     updateValues.put(DatabaseUtil.COLUMN_CONTENT, memory.getContent());
@@ -109,7 +109,7 @@ public class MemoriesDataSource {
     return retrieveMemory(memory.getId());
   }
 
-  public void dropMemoriesTable(){
+  public void dropMemoriesTable() {
     try {
       open();
       database.execSQL("drop table " + DatabaseUtil.TABLE_NAME);
