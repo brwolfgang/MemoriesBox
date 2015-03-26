@@ -1,5 +1,7 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements
       MemoriesRetrieveTask.TaskConclusionListener {
 
   private static final String TAG = "MainActivity";
+  private final ActionBarActivity thisActivity = this;
   private final int NEW_MEMORY = 000;
   private final int EDIT_MEMORY = 001;
   private ListView memoryListView;
@@ -48,7 +51,6 @@ public class MainActivity extends ActionBarActivity implements
       switch (menuItem.getItemId()) {
         case R.id.main_action_delete: {
           deleteMemoryFromDatabase();
-          actionMode.finish();
           return true;
         }
         default:
@@ -100,6 +102,7 @@ public class MainActivity extends ActionBarActivity implements
   public void onPostExecute(Cursor cursor) {
     memoriesAdapter.changeCursor(cursor);
     memoriesAdapter.notifyDataSetChanged();
+    Log.i(TAG, "Cursor updated");
   }
 
   @Override
@@ -188,11 +191,24 @@ public class MainActivity extends ActionBarActivity implements
   }
 
   private void deleteMemoryFromDatabase() {
-    Log.i(TAG, "Memories to delete: " + batchSelectedMemories.size());
-    Iterator<Long> iterator = batchSelectedMemories.iterator();
-    while (iterator.hasNext()) {
-      MemoriesDataSource.getInstance(getApplicationContext()).deleteMemory(iterator.next());
-    }
-    new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(this));
+    new AlertDialog.Builder(this)
+          .setTitle("Delete selected memories?")
+          .setMessage("Deleted memories cannot be recovered")
+          .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              Log.i(TAG, "Memories to delete: " + batchSelectedMemories.size());
+              Iterator<Long> iterator = batchSelectedMemories.iterator();
+              while (iterator.hasNext()) {
+                MemoriesDataSource.getInstance(getApplicationContext()).deleteMemory(iterator.next());
+              }
+              batchSelectedMemories.clear();
+              mActionMode.finish();
+              new MemoriesRetrieveTask((MemoriesRetrieveTask.TaskConclusionListener) thisActivity)
+                    .execute(MemoriesDataSource.getInstance(thisActivity));
+            }
+          })
+          .setNegativeButton("No", null)
+          .show();
   }
 }
