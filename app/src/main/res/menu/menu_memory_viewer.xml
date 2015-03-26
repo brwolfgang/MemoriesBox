@@ -2,8 +2,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="br.nom.marcos.wolfgang.android.memoriesbox.MemoryDetailsViewer">
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_settings"
+    <item android:id="@+id/main_action_add_memory"
+          android:title="@string/action_add_memory"
           android:orderInCategory="100"
           app:showAsAction="never"/>
 </menu>

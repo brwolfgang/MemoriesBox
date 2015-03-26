@@ -3,7 +3,7 @@
 
     <string name="main_description_title">Memory Title</string>
     <string name="main_description_content">Memory Description</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_add_memory">Add memory</string>
     <string name="memory_viewer_button_save">Save Memory</string>
 
     <string name="memories_list_item_title">Memory Title Example</string>
