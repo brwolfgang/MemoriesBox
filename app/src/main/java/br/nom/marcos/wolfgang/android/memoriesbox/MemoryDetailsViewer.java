@@ -1,8 +1,10 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -25,6 +27,7 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
   private TextView memoryDate;
   private TextView memoryTime;
   private Memory memory;
+  private Activity thisActivity = this;
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -37,6 +40,12 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
     switch (item.getItemId()) {
       case R.id.details_viewer_action_save:
         saveMemory();
+        break;
+      case R.id.details_viewer_action_delete:
+        deleteMemory();
+        break;
+      default:
+        break;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -132,6 +141,27 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
         setResult(Activity.RESULT_OK);
         finish();
       }
+    }
+  }
+
+  private void deleteMemory() {
+    if (memory == null) {
+      setResult(this.RESULT_CANCELED);
+      finish();
+    } else {
+      new AlertDialog.Builder(this)
+            .setTitle("Delete memory?")
+            .setMessage("A deleted memory cannot be recovered")
+            .setNegativeButton("No", null)
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                MemoriesDataSource.getInstance(thisActivity).deleteMemory(memory.getId());
+                thisActivity.setResult(thisActivity.RESULT_OK);
+                thisActivity.finish();
+              }
+            })
+            .show();
     }
   }
 

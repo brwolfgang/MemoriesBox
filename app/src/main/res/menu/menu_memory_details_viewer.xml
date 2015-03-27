@@ -4,6 +4,11 @@
     <item
         android:id="@+id/details_viewer_action_save"
         android:icon="@drawable/ic_action_accept"
-        android:title="@string/action_add_memory"
+        android:title="@string/memory_viewer_action_save"
+        memoriesbox:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/details_viewer_action_delete"
+        android:icon="@drawable/ic_action_discard"
+        android:title="@string/viewer_details_action_delete"
         memoriesbox:showAsAction="ifRoom"/>
 </menu>

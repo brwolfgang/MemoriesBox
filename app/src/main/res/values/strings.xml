@@ -4,7 +4,7 @@
     <string name="main_description_title">Memory Title</string>
     <string name="main_description_content">Memory Description</string>
     <string name="action_add_memory">Add memory</string>
-    <string name="memory_viewer_button_save">Save Memory</string>
+    <string name="memory_viewer_action_save">Save Memory</string>
 
     <string name="memories_list_item_title">Memory Title Example</string>
     <string name="memories_list_item_date">22/03/1991</string>
@@ -13,4 +13,5 @@
     <string name="memory_viewer_pick_date">Pick date</string>
     <string name="main_action_mode_edit">Edit</string>
     <string name="main_action_mode_delete">Delete</string>
+    <string name="viewer_details_action_delete">Delete memory</string>
 </resources>
