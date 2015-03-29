@@ -32,6 +32,7 @@ public class MainActivity extends ActionBarActivity implements
   private ListView memoryListView;
   private MemoriesListAdapter memoriesAdapter;
   private Set<Long> batchSelectedMemories = Collections.synchronizedSet(new HashSet<Long>());
+  private boolean batchSelectionMode = false;
   private ActionMode mActionMode;
   private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
     @Override
@@ -62,6 +63,7 @@ public class MainActivity extends ActionBarActivity implements
     public void onDestroyActionMode(ActionMode actionMode) {
       mActionMode = null;
       batchSelectedMemories.clear();
+      setBatchSelectionMode(false);
       Log.i(TAG, "Action mode destroyed");
     }
   };
@@ -136,25 +138,17 @@ public class MainActivity extends ActionBarActivity implements
     memoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mActionMode == null)
+        if (!batchSelectionMode)
           editMemoryOnNewActivity(id);
+        else
+          handleItemListSelection(id);
       }
     });
 
     memoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
       @Override
       public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mActionMode == null) {
-          mActionMode = startSupportActionMode(mActionModeCallback);
-          batchSelectedMemories.add(id);
-          return true;
-        } else {
-          if (batchSelectedMemories.contains(id))
-            batchSelectedMemories.remove(id);
-          else
-            batchSelectedMemories.add(id);
-          return false;
-        }
+        return handleItemListSelection(id);
       }
     });
   }
@@ -210,5 +204,25 @@ public class MainActivity extends ActionBarActivity implements
           })
           .setNegativeButton("No", null)
           .show();
+  }
+
+  private void setBatchSelectionMode(boolean state) {
+    this.batchSelectionMode = state;
+  }
+
+  private boolean handleItemListSelection(Long memoryID) {
+    if (mActionMode == null) {
+      setBatchSelectionMode(true);
+      mActionMode = startSupportActionMode(mActionModeCallback);
+      batchSelectedMemories.add(memoryID);
+      return true;
+    } else {
+      if (batchSelectedMemories.contains(memoryID)) {
+        batchSelectedMemories.remove(memoryID);
+      } else {
+        batchSelectedMemories.add(memoryID);
+      }
+      return false;
+    }
   }
 }
