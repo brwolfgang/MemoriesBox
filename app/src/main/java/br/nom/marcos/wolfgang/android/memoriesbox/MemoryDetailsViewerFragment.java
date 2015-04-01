@@ -35,10 +35,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.activity_memory_viewer, container, false);
-    if(getArguments() != null) {
-      memory = (Memory) getArguments().get("memory");
-      loadMemoryData();
-    }
     return view;
   }
 
@@ -57,6 +53,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     initResources();
+    if(getArguments() != null) {
+      memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
+          .retrieveMemory(getArguments().getLong("memoryID"));
+      loadMemoryData();
+    }
   }
 
   @Override
