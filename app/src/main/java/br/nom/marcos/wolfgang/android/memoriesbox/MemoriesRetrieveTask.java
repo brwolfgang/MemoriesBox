@@ -11,7 +11,7 @@ public class MemoriesRetrieveTask extends AsyncTask<MemoriesDataSource, Void, Cu
   TaskConclusionListener listener;
 
   public interface TaskConclusionListener{
-    public void onPostExecute(Cursor cursor);
+    public void onMemoriesRetrieved(Cursor cursor);
   }
 
   public MemoriesRetrieveTask(TaskConclusionListener listener) {
@@ -27,6 +27,6 @@ public class MemoriesRetrieveTask extends AsyncTask<MemoriesDataSource, Void, Cu
   @Override
   protected void onPostExecute(Cursor cursor) {
     super.onPostExecute(cursor);
-    this.listener.onPostExecute(cursor);
+    this.listener.onMemoriesRetrieved(cursor);
   }
 }

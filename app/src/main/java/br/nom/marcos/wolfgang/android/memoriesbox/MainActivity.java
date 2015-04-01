@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity implements
   }
 
   @Override
-  public void onPostExecute(Cursor cursor) {
+  public void onMemoriesRetrieved(Cursor cursor) {
     memoriesAdapter.changeCursor(cursor);
     memoriesAdapter.notifyDataSetChanged();
     Log.i(TAG, "Cursor updated");
