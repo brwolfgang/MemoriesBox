@@ -35,7 +35,14 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   @Override
   public void editMemory(Long id) {
-
+    fragmentTransaction = fragmentManager.beginTransaction();
+    memoryDetailsViewer = new MemoryDetailsViewerFragment();
+    Bundle args = new Bundle();
+    args.putLong("memoryID", id);
+    memoryDetailsViewer.setArguments(args);
+    fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
+    fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
+    fragmentTransaction.commit();
   }
 
   @Override
@@ -43,7 +50,7 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
     fragmentTransaction = fragmentManager.beginTransaction();
     memoryDetailsViewer = new MemoryDetailsViewerFragment();
     fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
-    fragmentTransaction.addToBackStack(null);
+    fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
     fragmentTransaction.commit();
   }
 
@@ -58,7 +65,7 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
   }
 
   private void initResources() {
-    fragmentManager = getFragmentManager();
+    fragmentManager = getSupportFragmentManager();
     fragmentTransaction = fragmentManager.beginTransaction();
     memoryListFragment = new MemoryListFragment();
     fragmentTransaction.add(R.id.main_fragment_container, memoryListFragment);
