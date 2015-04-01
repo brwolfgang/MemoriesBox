@@ -20,10 +20,10 @@ public class MemoriesDataSource {
   private SQLiteDatabase database;
   private DatabaseUtil dbUtil;
   private String[] allColumns = {DatabaseUtil.COLUMN_ID,
-        DatabaseUtil.COLUMN_TITLE,
-        DatabaseUtil.COLUMN_CONTENT,
-        DatabaseUtil.COLUMN_DATE,
-        DatabaseUtil.COLUMN_TIME};
+      DatabaseUtil.COLUMN_TITLE,
+      DatabaseUtil.COLUMN_CONTENT,
+      DatabaseUtil.COLUMN_DATE,
+      DatabaseUtil.COLUMN_TIME};
 
   private MemoriesDataSource(Context context) {
     dbUtil = new DatabaseUtil(context);
@@ -37,11 +37,15 @@ public class MemoriesDataSource {
   }
 
   public void open() throws SQLException {
-    database = dbUtil.getWritableDatabase();
+    if (database == null) {
+      database = dbUtil.getWritableDatabase();
+      Log.i(TAG, "Database was opened");
+    }
   }
 
   public void close() {
     dbUtil.close();
+    database = null;
   }
 
   public Memory createMemory(String title, String content, String date, String time) {
@@ -60,8 +64,8 @@ public class MemoriesDataSource {
 
   public Memory retrieveMemory(long memoryId) {
     Cursor cursor = database.query(DatabaseUtil.TABLE_NAME,
-          allColumns, DatabaseUtil.COLUMN_ID + " = " + memoryId,
-          null, null, null, null);
+        allColumns, DatabaseUtil.COLUMN_ID + " = " + memoryId,
+        null, null, null, null);
 
     cursor.moveToFirst();
     Memory retrievedMemory = cursorToMemory(cursor);
@@ -103,7 +107,7 @@ public class MemoriesDataSource {
     updateValues.put(DatabaseUtil.COLUMN_TIME, memory.getTime());
 
     database.update(DatabaseUtil.TABLE_NAME, updateValues,
-          DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
+        DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
 
     Log.i(TAG, "Memory id: " + memory.getId() + " updated");
     return retrieveMemory(memory.getId());
