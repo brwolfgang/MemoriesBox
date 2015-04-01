@@ -97,14 +97,14 @@ public class MemoryDetailsViewer extends ActionBarActivity implements
     memoryDate.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        new DatePickerFragment().show(getFragmentManager(), "datepicker");
+        new DatePickerFragment().show(getSupportFragmentManager(), "datepicker");
       }
     });
 
     memoryTime.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        new TimePickerFragment().show(getFragmentManager(), "timepicker");
+        new TimePickerFragment().show(getSupportFragmentManager(), "timepicker");
       }
     });
   }

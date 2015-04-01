@@ -2,16 +2,16 @@ package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 
 import java.util.Calendar;
 
 /**
  * Created by Wolfgang Marcos on 24/03/2015.
  */
-public class TimePickerFragment extends DialogFragment{
+public class TimePickerFragment extends DialogFragment {
 
   TimePickerDialog.OnTimeSetListener listener;
 

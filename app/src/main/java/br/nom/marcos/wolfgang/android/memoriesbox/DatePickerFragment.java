@@ -3,15 +3,15 @@ package br.nom.marcos.wolfgang.android.memoriesbox;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 
 import java.util.Calendar;
 
 /**
  * Created by Wolfgang Marcos on 23/03/2015.
  */
-public class DatePickerFragment extends DialogFragment{
+public class DatePickerFragment extends DialogFragment {
 
   DatePickerDialog.OnDateSetListener listener;
 

@@ -1,17 +1,19 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 
-public class MainActivity extends ActionBarActivity implements MemoryListFragment.MemoryListFragmentListener, MemoryDetailsViewerFragment.MemoryDetailsViewerFragmentListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class MainActivity extends ActionBarActivity implements MemoryListFragment.MemoryListFragmentListener,
+    MemoryDetailsViewerFragment.MemoryDetailsViewerFragmentListener, DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener{
 
   private static final String TAG = "MainActivity";
   private FragmentManager fragmentManager;
