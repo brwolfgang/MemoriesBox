@@ -46,6 +46,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
   @Override
   public void onAttach(Activity activity) {
+    super.onAttach(activity);
     mContext = activity.getApplicationContext();
     try {
       listener = (MemoryDetailsViewerFragmentListener) activity;
