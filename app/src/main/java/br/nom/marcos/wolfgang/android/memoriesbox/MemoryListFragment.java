@@ -97,8 +97,13 @@ public class MemoryListFragment extends ListFragment implements MemoriesRetrieve
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.memory_list_fragment, container, false);
     setHasOptionsMenu(true);
-    initResources();
     return view;
+  }
+
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    initResources();
   }
 
   @Override
@@ -128,7 +133,7 @@ public class MemoryListFragment extends ListFragment implements MemoriesRetrieve
     initDatabase();
 
     memoryListView = getListView();
-    memoryListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
 
     new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
 
