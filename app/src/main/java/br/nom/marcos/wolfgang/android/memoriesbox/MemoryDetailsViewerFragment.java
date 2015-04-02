@@ -1,19 +1,24 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -29,19 +34,18 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   private TextView memoryTime;
   private Memory memory;
   private MemoryDetailsViewerFragmentListener listener;
-  private Context mContext;
 
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.activity_memory_viewer, container, false);
+    setHasOptionsMenu(true);
     return view;
   }
 
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
-    mContext = activity.getApplicationContext();
     try {
       listener = (MemoryDetailsViewerFragmentListener) activity;
     } catch (ClassCastException e) {
@@ -58,6 +62,27 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
           .retrieveMemory(getArguments().getLong("memoryID"));
       loadMemoryData();
     }
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.menu_memory_details_viewer, menu);
+    super.onCreateOptionsMenu(menu, inflater);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.details_viewer_action_save:
+        saveMemory();
+        break;
+      case R.id.details_viewer_action_delete:
+        deleteMemory();
+        break;
+      default:
+        break;
+    }
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
@@ -105,12 +130,9 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
-    String currentDate =
-        calendar.get(Calendar.DAY_OF_MONTH) + "/" +
-        (calendar.get(Calendar.MONTH) + 1) + "/" +
-        calendar.get(Calendar.YEAR);
-
-    return currentDate;
+    return calendar.get(Calendar.DAY_OF_MONTH) + "/" +
+           (calendar.get(Calendar.MONTH) + 1) + "/" +
+           calendar.get(Calendar.YEAR);
   }
 
   private String getCurrentTime() {
@@ -132,7 +154,60 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     return formattedTime;
   }
 
+  private void saveMemory() {
+    String title = memoryTitle.getText().toString();
+    String content = memoryContent.getText().toString();
+    String date = memoryDate.getText().toString();
+    String time = memoryTime.getText().toString();
+
+    // TODO Remove this before publishing
+    if (title.length() == 0) {
+      title = "Example text";
+      content = "Example content";
+    }
+
+    if (title.length() > 0 && content.length() > 0) {
+      if (memory == null) {
+        memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
+            .createMemory(title, content, date, time);
+        if (memory != null) {
+          Toast.makeText(getActivity().getApplicationContext(), "Memory created: "
+              + memory.getTitle(), Toast.LENGTH_SHORT).show();
+          listener.onMemorySaved();
+        }
+      } else {
+        memory.setTitle(title);
+        memory.setContent(content);
+        memory.setDate(date);
+        memory.setTime(time);
+        memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
+            .updateMemory(memory);
+
+        Toast.makeText(getActivity().getApplicationContext(), "Memory updated: "
+            + memory.getTitle(), Toast.LENGTH_SHORT).show();
+        listener.onMemorySaved();
+      }
+    }
+  }
+
+//  TODO extract String resources to XML file
+  private void deleteMemory() {
+    new AlertDialog.Builder(getActivity().getApplicationContext())
+        .setTitle("Delete memory?")
+        .setMessage("A deleted memory cannot be recovered")
+        .setNegativeButton("No", null)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            MemoriesDataSource.getInstance(getActivity().getApplicationContext()).deleteMemory(memory.getId());
+            listener.onMemoryDeleted();
+          }
+        })
+        .show();
+  }
+
   public interface MemoryDetailsViewerFragmentListener {
     public void onMemorySaved();
+    public void onMemoryDeleted();
   }
 }
