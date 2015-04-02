@@ -28,12 +28,8 @@ import java.util.Set;
 /**
  * Created by Wolfgang on 31/03/2015.
  */
-public class MemoryListFragment extends ListFragment implements MemoriesRetrieveTask.TaskConclusionListener{
-
-  public interface MemoryListFragmentListener {
-    public void editMemory(Long id);
-    public void createNewMemory();
-  }
+public class MemoryListFragment extends ListFragment implements
+    MemoriesRetrieveTask.TaskConclusionListener{
 
   private static final String TAG = "MemoryListFragment";
   private MemoryListFragmentListener listener;
@@ -152,7 +148,6 @@ public class MemoryListFragment extends ListFragment implements MemoriesRetrieve
   private void initDatabase() {
     try {
       MemoriesDataSource.getInstance(getActivity().getApplicationContext()).open();
-      Log.i(TAG, "Database opened");
     } catch (SQLException e) {
       e.printStackTrace();
       System.err.println(e.getCause());
@@ -216,5 +211,10 @@ public class MemoryListFragment extends ListFragment implements MemoriesRetrieve
         })
         .setNegativeButton("No", null)
         .show();
+  }
+
+  public interface MemoryListFragmentListener {
+    public void editMemory(Long id);
+    public void createNewMemory();
   }
 }
