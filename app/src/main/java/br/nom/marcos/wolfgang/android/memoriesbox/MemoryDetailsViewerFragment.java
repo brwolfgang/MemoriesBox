@@ -192,7 +192,12 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
 //  TODO extract String resources to XML file
   private void deleteMemory() {
-    new AlertDialog.Builder(getActivity().getApplicationContext())
+    if (memory == null) {
+      listener.onMemoryDeleted();
+      return;
+    }
+
+    new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete memory?")
         .setMessage("A deleted memory cannot be recovered")
         .setNegativeButton("No", null)
