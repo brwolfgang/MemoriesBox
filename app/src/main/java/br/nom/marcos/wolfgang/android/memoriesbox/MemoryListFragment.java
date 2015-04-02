@@ -178,12 +178,15 @@ public class MemoryListFragment extends ListFragment implements
       setBatchSelectionMode(true);
       mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
       batchSelectedMemories.add(memoryID);
+      Log.i(TAG, "Added to selection: " + memoryID);
       return true;
     } else {
       if (batchSelectedMemories.contains(memoryID)) {
         batchSelectedMemories.remove(memoryID);
+        Log.i(TAG, "Removed from selection: " + memoryID);
       } else {
         batchSelectedMemories.add(memoryID);
+        Log.i(TAG, "Added to selection: " + memoryID);
       }
       return false;
     }
