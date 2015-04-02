@@ -184,6 +184,8 @@ public class MemoryListFragment extends ListFragment implements
       if (batchSelectedMemories.contains(memoryID)) {
         batchSelectedMemories.remove(memoryID);
         Log.i(TAG, "Removed from selection: " + memoryID);
+        if (batchSelectedMemories.size() == 0)
+          mActionMode.finish();
       } else {
         batchSelectedMemories.add(memoryID);
         Log.i(TAG, "Added to selection: " + memoryID);
