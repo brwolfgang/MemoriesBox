@@ -2,7 +2,6 @@ package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ public class MemoryListFragment extends ListFragment implements
     public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
       MenuInflater inflater = actionMode.getMenuInflater();
       inflater.inflate(R.menu.menu_main_action_mode, menu);
+      Log.i(TAG, "ActionMode created");
       return true;
     }
 
@@ -190,9 +190,8 @@ public class MemoryListFragment extends ListFragment implements
   }
 
   private void deleteMemoryFromDatabase() {
-    final Context mContext = getActivity().getApplicationContext();
     final MemoriesRetrieveTask.TaskConclusionListener listener = this;
-    new AlertDialog.Builder(mContext)
+    new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete selected memories?")
         .setMessage("Deleted memories cannot be recovered")
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -205,8 +204,8 @@ public class MemoryListFragment extends ListFragment implements
             }
             batchSelectedMemories.clear();
             mActionMode.finish();
-            new MemoriesRetrieveTask((MemoriesRetrieveTask.TaskConclusionListener) listener)
-                .execute(MemoriesDataSource.getInstance(mContext));
+            new MemoriesRetrieveTask(listener)
+                .execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
           }
         })
         .setNegativeButton("No", null)
