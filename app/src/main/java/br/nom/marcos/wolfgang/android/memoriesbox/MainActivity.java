@@ -30,28 +30,22 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   @Override
   public void onMemorySaved() {
+    loadMemoryListView();
+  }
 
+  @Override
+  public void onMemoryDeleted() {
+    loadMemoryListView();
   }
 
   @Override
   public void editMemory(Long id) {
-    fragmentTransaction = fragmentManager.beginTransaction();
-    memoryDetailsViewer = new MemoryDetailsViewerFragment();
-    Bundle args = new Bundle();
-    args.putLong("memoryID", id);
-    memoryDetailsViewer.setArguments(args);
-    fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
-    fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
-    fragmentTransaction.commit();
+    loadMemoryDetailsViewer(id);
   }
 
   @Override
   public void createNewMemory() {
-    fragmentTransaction = fragmentManager.beginTransaction();
-    memoryDetailsViewer = new MemoryDetailsViewerFragment();
-    fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
-    fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
-    fragmentTransaction.commit();
+    loadMemoryDetailsViewer(null);
   }
 
   @Override
@@ -66,9 +60,28 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   private void initResources() {
     fragmentManager = getSupportFragmentManager();
+    loadMemoryListView();
+  }
+
+  private void loadMemoryListView(){
+    fragmentManager.popBackStackImmediate();
     fragmentTransaction = fragmentManager.beginTransaction();
-    memoryListFragment = new MemoryListFragment();
-    fragmentTransaction.add(R.id.main_fragment_container, memoryListFragment);
+    if (memoryListFragment == null)
+      memoryListFragment = new MemoryListFragment();
+    fragmentTransaction.replace(R.id.main_fragment_container, memoryListFragment);
+    fragmentTransaction.commit();
+  }
+
+  private void loadMemoryDetailsViewer(Long id){
+    fragmentTransaction = fragmentManager.beginTransaction();
+    memoryDetailsViewer = new MemoryDetailsViewerFragment();
+    if (id != null) {
+      Bundle args = new Bundle();
+      args.putLong("memoryID", id);
+      memoryDetailsViewer.setArguments(args);
+    }
+    fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
+    fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
     fragmentTransaction.commit();
   }
 }
