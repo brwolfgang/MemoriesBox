@@ -49,12 +49,12 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   @Override
   public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-    ((DatePickerDialog.OnDateSetListener) memoryDetailsViewer).onDateSet(view, year, monthOfYear, dayOfMonth);
+    memoryDetailsViewer.onDateSet(view, year, monthOfYear, dayOfMonth);
   }
 
   @Override
   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    ((TimePickerDialog.OnTimeSetListener) memoryDetailsViewer).onTimeSet(view, hourOfDay, minute);
+    memoryDetailsViewer.onTimeSet(view, hourOfDay, minute);
   }
 
   private void initResources() {
