@@ -32,7 +32,6 @@ public class MemoryListFragment extends ListFragment implements
 
   private static final String TAG = "MemoryListFragment";
   private MemoryListFragmentListener listener;
-  private ListView memoryListView;
   private MemoriesListAdapter memoryListAdapter;
   private boolean batchSelectionMode = false;
   private Set<Long> batchSelectedMemories = Collections.synchronizedSet(new HashSet<Long>());
@@ -86,7 +85,7 @@ public class MemoryListFragment extends ListFragment implements
   @Override
   public void onMemoriesRetrieved(Cursor cursor) {
     memoryListAdapter.changeCursor(cursor);
-    memoryListView.deferNotifyDataSetChanged();
+    getListView().deferNotifyDataSetChanged();
   }
 
   @Override
@@ -106,8 +105,10 @@ public class MemoryListFragment extends ListFragment implements
   public void onListItemClick(ListView l, View v, int position, long id) {
     if (!batchSelectionMode)
       listener.editMemory(id);
-    else
+    else {
+      Log.i(TAG, "OnListItemClick foi chamado");
       handleItemListSelection(id);
+    }
   }
 
   @Override
@@ -128,8 +129,7 @@ public class MemoryListFragment extends ListFragment implements
   private void initResources(){
     initDatabase();
 
-    memoryListView = getListView();
-
+    getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
     new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
 
@@ -137,7 +137,7 @@ public class MemoryListFragment extends ListFragment implements
 
     setListAdapter(memoryListAdapter);
 
-    memoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+    getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
       @Override
       public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         return handleItemListSelection(id);
