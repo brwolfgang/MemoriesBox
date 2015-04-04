@@ -3,7 +3,6 @@ package br.nom.marcos.wolfgang.android.memoriesbox;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -18,8 +17,8 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
   private static final String TAG = "MainActivity";
   private FragmentManager fragmentManager;
   private FragmentTransaction fragmentTransaction;
-  private Fragment memoryListFragment;
-  private Fragment memoryDetailsViewer;
+  private MemoryListFragment memoryListFragment;
+  private MemoryDetailsViewerFragment memoryDetailsViewer;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,26 +59,23 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   private void initResources() {
     fragmentManager = getSupportFragmentManager();
+    memoryListFragment = new MemoryListFragment();
+    memoryDetailsViewer = new MemoryDetailsViewerFragment();
     loadMemoryListView();
   }
 
   private void loadMemoryListView(){
     fragmentManager.popBackStackImmediate();
     fragmentTransaction = fragmentManager.beginTransaction();
-    if (memoryListFragment == null)
-      memoryListFragment = new MemoryListFragment();
     fragmentTransaction.replace(R.id.main_fragment_container, memoryListFragment);
     fragmentTransaction.commit();
   }
 
   private void loadMemoryDetailsViewer(Long id){
     fragmentTransaction = fragmentManager.beginTransaction();
-    memoryDetailsViewer = new MemoryDetailsViewerFragment();
-    if (id != null) {
-      Bundle args = new Bundle();
-      args.putLong("memoryID", id);
-      memoryDetailsViewer.setArguments(args);
-    }
+    Bundle args = new Bundle();
+    args.putLong("memoryID", id != null ? id : -1);
+    memoryDetailsViewer.setArguments(args);
     fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
     fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
     fragmentTransaction.commit();

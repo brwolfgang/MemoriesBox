@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +28,7 @@ import java.util.Calendar;
  */
 public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
-  private static final String TAG = "MemoryDetailsViewerFragment";
+  private static final String TAG = "MemoryDetailsViewer";
   private EditText memoryTitle;
   private EditText memoryContent;
   private TextView memoryDate;
@@ -57,10 +58,20 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     initResources();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
     if(getArguments() != null) {
-      memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
-          .retrieveMemory(getArguments().getLong("memoryID"));
-      loadMemoryData();
+      Long id = getArguments().getLong("memoryID");
+      if(id == -1) {
+        cleanMemoryDetailsViewerFragment();
+      }else{
+        memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
+            .retrieveMemory(getArguments().getLong("memoryID"));
+        loadMemoryData();
+      }
     }
   }
 
@@ -126,13 +137,14 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     this.memoryContent.setText(memory.getContent());
     this.memoryDate.setText(memory.getDate());
     this.memoryTime.setText(memory.getTime());
+    Log.i(TAG, "Memory ID " + memory.getId() + " data loaded");
   }
 
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
     return calendar.get(Calendar.DAY_OF_MONTH) + "/" +
-           (calendar.get(Calendar.MONTH) + 1) + "/" +
-           calendar.get(Calendar.YEAR);
+        (calendar.get(Calendar.MONTH) + 1) + "/" +
+        calendar.get(Calendar.YEAR);
   }
 
   private String getCurrentTime() {
@@ -190,7 +202,16 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     }
   }
 
-//  TODO extract String resources to XML file
+  public void cleanMemoryDetailsViewerFragment(){
+    this.memory = null;
+    this.memoryTitle.setText("");
+    this.memoryContent.setText("");
+    this.memoryDate.setText(getCurrentDate());
+    this.memoryTime.setText(getCurrentTime());
+    Log.i(TAG, "Cleaned up for new use");
+  }
+
+  //  TODO extract String resources to XML file
   private void deleteMemory() {
     if (memory == null) {
       listener.onMemoryDeleted();
