@@ -3,6 +3,6 @@
       xmlns:memoriesbox="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/main_action_delete"
           android:icon="@drawable/ic_action_discard"
-          android:title="@string/main_action_mode_delete"
+          android:title="@string/memory_list_action_mode_delete"
           memoriesbox:showAsAction="ifRoom"/>
 </menu>

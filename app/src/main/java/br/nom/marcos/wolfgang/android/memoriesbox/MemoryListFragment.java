@@ -33,7 +33,7 @@ public class MemoryListFragment extends ListFragment implements
     @Override
     public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
       MenuInflater inflater = mode.getMenuInflater();
-      inflater.inflate(R.menu.menu_main_action_mode, menu);
+      inflater.inflate(R.menu.memory_list_action_mode, menu);
       Log.i(TAG, "ActionMode created");
       return true;
     }
@@ -99,7 +99,7 @@ public class MemoryListFragment extends ListFragment implements
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
+    getActivity().getMenuInflater().inflate(R.menu.menu_memory_list, menu);
   }
 
   @Override

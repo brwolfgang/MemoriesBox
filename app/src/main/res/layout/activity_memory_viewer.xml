@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"
         android:layout_centerHorizontal="true"
-        android:text="@string/main_description_title"
+        android:text="@string/memory_viewer_description_title"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <EditText
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/memory_viewer_edit_title"
         android:layout_centerHorizontal="true"
-        android:text="@string/main_description_content"
+        android:text="@string/memory_viewer_description_content"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <EditText

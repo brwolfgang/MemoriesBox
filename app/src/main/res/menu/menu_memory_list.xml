@@ -2,6 +2,6 @@
       xmlns:memoriesbox="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/main_action_add_memory"
           android:icon="@drawable/ic_action_new"
-          android:title="@string/action_add_memory"
+          android:title="@string/memories_list_action_add_memory"
           memoriesbox:showAsAction="ifRoom"/>
 </menu>
