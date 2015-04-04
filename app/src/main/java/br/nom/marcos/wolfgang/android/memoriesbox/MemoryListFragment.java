@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,14 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by Wolfgang on 31/03/2015.
@@ -31,28 +25,27 @@ public class MemoryListFragment extends ListFragment implements
     MemoriesRetrieveTask.TaskConclusionListener{
 
   private static final String TAG = "MemoryListFragment";
-  private MemoryListFragmentListener listener;
-  private MemoriesListAdapter memoryListAdapter;
-  private boolean batchSelectionMode = false;
-  private Set<Long> batchSelectedMemories = Collections.synchronizedSet(new HashSet<Long>());
-  private ActionMode mActionMode;
-  private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+  private AbsListView.MultiChoiceModeListener mMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
     @Override
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-      MenuInflater inflater = actionMode.getMenuInflater();
+    public void onItemCheckedStateChanged(android.view.ActionMode mode, int position, long id, boolean checked) {
+    }
+
+    @Override
+    public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
+      MenuInflater inflater = mode.getMenuInflater();
       inflater.inflate(R.menu.menu_main_action_mode, menu);
       Log.i(TAG, "ActionMode created");
       return true;
     }
 
     @Override
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+    public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
       return false;
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-      switch (menuItem.getItemId()) {
+    public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem item) {
+      switch (item.getItemId()) {
         case R.id.main_action_delete: {
           deleteMemoryFromDatabase();
           return true;
@@ -63,13 +56,11 @@ public class MemoryListFragment extends ListFragment implements
     }
 
     @Override
-    public void onDestroyActionMode(ActionMode actionMode) {
-      mActionMode = null;
-      batchSelectedMemories.clear();
-      setBatchSelectionMode(false);
-      Log.i(TAG, "Action mode destroyed");
+    public void onDestroyActionMode(android.view.ActionMode mode) {
     }
   };
+  private MemoryListFragmentListener listener;
+  private MemoriesListAdapter memoryListAdapter;
 
   @Override
   public void onAttach(Activity activity) {
@@ -103,12 +94,7 @@ public class MemoryListFragment extends ListFragment implements
 
   @Override
   public void onListItemClick(ListView l, View v, int position, long id) {
-    if (!batchSelectionMode)
       listener.editMemory(id);
-    else {
-      Log.i(TAG, "OnListItemClick foi chamado");
-      handleItemListSelection(id);
-    }
   }
 
   @Override
@@ -118,31 +104,25 @@ public class MemoryListFragment extends ListFragment implements
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
+    switch (item.getItemId()){
       case R.id.main_action_add_memory:
         listener.createNewMemory();
+        return true;
     }
-
-    return true;
+    return false;
   }
 
   private void initResources(){
     initDatabase();
 
-    getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+    getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+    getListView().setMultiChoiceModeListener(mMultiChoiceModeListener);
 
     new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
 
     initMemoriesAdapter();
 
     setListAdapter(memoryListAdapter);
-
-    getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-      @Override
-      public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        return handleItemListSelection(id);
-      }
-    });
   }
 
   private void initDatabase() {
@@ -169,31 +149,6 @@ public class MemoryListFragment extends ListFragment implements
         null, columnsFrom, viewsTo, MemoriesListAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
   }
 
-  private void setBatchSelectionMode(boolean state) {
-    this.batchSelectionMode = state;
-  }
-
-  private boolean handleItemListSelection(Long memoryID) {
-    if (mActionMode == null) {
-      setBatchSelectionMode(true);
-      mActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(mActionModeCallback);
-      batchSelectedMemories.add(memoryID);
-      Log.i(TAG, "Added to selection: " + memoryID);
-      return true;
-    } else {
-      if (batchSelectedMemories.contains(memoryID)) {
-        batchSelectedMemories.remove(memoryID);
-        Log.i(TAG, "Removed from selection: " + memoryID);
-        if (batchSelectedMemories.size() == 0)
-          mActionMode.finish();
-      } else {
-        batchSelectedMemories.add(memoryID);
-        Log.i(TAG, "Added to selection: " + memoryID);
-      }
-      return false;
-    }
-  }
-
   private void deleteMemoryFromDatabase() {
     final MemoriesRetrieveTask.TaskConclusionListener listener = this;
     new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
@@ -202,13 +157,10 @@ public class MemoryListFragment extends ListFragment implements
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            Log.i(TAG, "Memories to delete: " + batchSelectedMemories.size());
-            Iterator<Long> iterator = batchSelectedMemories.iterator();
-            while (iterator.hasNext()) {
-              MemoriesDataSource.getInstance(getActivity().getApplicationContext()).deleteMemory(iterator.next());
-            }
-            batchSelectedMemories.clear();
-            mActionMode.finish();
+            Log.i(TAG, "Memories to delete: " + getListView().getCheckedItemCount());
+            for (Long id : getListView().getCheckedItemIds())
+              MemoriesDataSource.getInstance(getActivity().getApplicationContext()).deleteMemory(id);
+
             new MemoriesRetrieveTask(listener)
                 .execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
           }
