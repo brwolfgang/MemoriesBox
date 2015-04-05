@@ -205,13 +205,15 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     Log.i(TAG, "Cleaned up for new use");
   }
 
-  //  TODO extract String resources to XML file
   private void deleteMemory() {
-    if (memory == null) {
-      listener.onMemoryDeleted();
-      return;
-    }
+    final TaskDeleteMemories.TaskDeleteMemoriesListener listener =
+        (TaskDeleteMemories.TaskDeleteMemoriesListener) getActivity();
 
+    final long[] memoryID = new long[1];
+    memoryID[0] = memory != null ? memory.getId() : 0;
+
+    // TODO extract string resources
+    // TODO use TaskDeleteMemory
     new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete memory?")
         .setMessage("A deleted memory cannot be recovered")
@@ -219,8 +221,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            MemoriesDataSource.getInstance(getActivity().getApplicationContext()).deleteMemory(memory.getId());
-            listener.onMemoryDeleted();
+            new TaskDeleteMemories(getActivity(), listener).execute(memoryID);
           }
         })
         .show();
@@ -228,6 +229,5 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
   public interface MemoryDetailsViewerFragmentListener {
     public void onMemorySaved();
-    public void onMemoryDeleted();
   }
 }
