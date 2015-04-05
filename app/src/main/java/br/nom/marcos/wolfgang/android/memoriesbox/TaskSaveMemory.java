@@ -18,10 +18,9 @@ public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
     this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
   }
 
-  // TODO Extract string resources
   @Override
   protected void onPreExecute() {
-    mProgressDialog.setMessage("Saving memory...");
+    mProgressDialog.setMessage(mContext.getString(R.string.memoy_save_progress_dialog));
     mProgressDialog.show();
   }
 
