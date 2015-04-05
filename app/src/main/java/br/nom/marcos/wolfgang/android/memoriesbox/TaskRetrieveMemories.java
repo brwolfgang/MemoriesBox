@@ -16,8 +16,7 @@ public class TaskRetrieveMemories extends AsyncTask<MemoriesDataSource, Void, Cu
 
   @Override
   protected Cursor doInBackground(MemoriesDataSource... params) {
-    Cursor cursor = params[0].getAllMemories();
-    return cursor;
+    return params[0].getAllMemories();
   }
 
   @Override
