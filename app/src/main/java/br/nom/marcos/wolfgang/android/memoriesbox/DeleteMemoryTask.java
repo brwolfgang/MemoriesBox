@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 /**
  * Created by Wolfgang on 04/04/2015.
  */
-public class DeleteMemoryTask extends AsyncTask<long[], Void, Boolean> {
+public class DeleteMemoryTask extends AsyncTask<long[], Void, Void> {
 
   private Context mContext;
   private ProgressDialog mProgressDialog;
@@ -26,19 +26,17 @@ public class DeleteMemoryTask extends AsyncTask<long[], Void, Boolean> {
   }
 
   @Override
-  protected Boolean doInBackground(long[]... params) {
+  protected Void doInBackground(long[]... params) {
     MemoriesDataSource mds = MemoriesDataSource.getInstance(mContext);
-    long[] memoryIDS = params[0];
-    mProgressDialog.setMax(100);
 
-    for(int i = 0; i < memoryIDS.length; i++) {
-      mds.deleteMemory(memoryIDS[i]);
-    }
-    return true;
+    for(long id : params[0])
+      mds.deleteMemory(id);
+
+    return null;
   }
 
   @Override
-  protected void onPostExecute(Boolean aBoolean) {
+  protected void onPostExecute(Void avoid) {
     new MemoriesRetrieveTask(listener).execute(MemoriesDataSource.getInstance(mContext));
 
     if(mProgressDialog.isShowing())
