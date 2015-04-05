@@ -19,14 +19,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
 /**
  * Created by Wolfgang Marcos on 30/03/2015.
  */
-public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener{
 
   private static final String TAG = "MemoryDetailsViewer";
   private EditText memoryTitle;
@@ -107,6 +106,12 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     memoryTime.setText(getFormattedTime(hourOfDay, minute));
   }
 
+  @Override
+  public void onMemorySaved(Memory memory) {
+    this.memory = memory;
+    listener.onMemorySaved();
+  }
+
   private void initResources() {
     Activity activity = getActivity();
     memoryTitle = (EditText) activity.findViewById(R.id.memory_viewer_edit_title);
@@ -179,26 +184,15 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     }
 
     if (title.length() > 0 && content.length() > 0) {
-      if (memory == null) {
-        memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
-            .createMemory(title, content, date, time);
-        if (memory != null) {
-          Toast.makeText(getActivity().getApplicationContext(), "Memory created: "
-              + memory.getTitle(), Toast.LENGTH_SHORT).show();
-          listener.onMemorySaved();
-        }
-      } else {
-        memory.setTitle(title);
-        memory.setContent(content);
-        memory.setDate(date);
-        memory.setTime(time);
-        memory = MemoriesDataSource.getInstance(getActivity().getApplicationContext())
-            .updateMemory(memory);
+      if (memory == null)
+        memory = new Memory();
 
-        Toast.makeText(getActivity().getApplicationContext(), "Memory updated: "
-            + memory.getTitle(), Toast.LENGTH_SHORT).show();
-        listener.onMemorySaved();
-      }
+      memory.setTitle(title);
+      memory.setContent(content);
+      memory.setDate(date);
+      memory.setTime(time);
+
+      new TaskSaveMemory(getActivity(), this).execute(memory);
     }
   }
 
