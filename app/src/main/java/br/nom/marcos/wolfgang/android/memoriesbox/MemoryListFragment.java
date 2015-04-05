@@ -150,7 +150,9 @@ public class MemoryListFragment extends ListFragment implements
   }
 
   private void deleteMemoryFromDatabase() {
-    final TaskRetrieveMemories.TaskRetrieveMemoriesListener listener = this;
+    final TaskDeleteMemories.TaskDeleteMemoriesListener listener =
+        (TaskDeleteMemories.TaskDeleteMemoriesListener) getActivity();
+
     new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete selected memories?")
         .setMessage("Deleted memories cannot be recovered")
