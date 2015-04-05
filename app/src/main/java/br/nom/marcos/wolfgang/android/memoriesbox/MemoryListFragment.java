@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * Created by Wolfgang on 31/03/2015.
  */
 public class MemoryListFragment extends ListFragment implements
-    MemoriesRetrieveTask.TaskConclusionListener{
+    TaskRetrieveMemories.TaskConclusionListener{
 
   private static final String TAG = "MemoryListFragment";
   private AbsListView.MultiChoiceModeListener mMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
@@ -118,7 +118,7 @@ public class MemoryListFragment extends ListFragment implements
     getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     getListView().setMultiChoiceModeListener(mMultiChoiceModeListener);
 
-    new MemoriesRetrieveTask(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
+    new TaskRetrieveMemories(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
 
     initMemoriesAdapter();
 
@@ -150,7 +150,7 @@ public class MemoryListFragment extends ListFragment implements
   }
 
   private void deleteMemoryFromDatabase() {
-    final MemoriesRetrieveTask.TaskConclusionListener listener = this;
+    final TaskRetrieveMemories.TaskConclusionListener listener = this;
     new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete selected memories?")
         .setMessage("Deleted memories cannot be recovered")
@@ -158,7 +158,7 @@ public class MemoryListFragment extends ListFragment implements
           @Override
           public void onClick(DialogInterface dialog, int which) {
             Log.i(TAG, "Memories to delete: " + getListView().getCheckedItemCount());
-            new DeleteMemoryTask(getActivity(), listener)
+            new TaskDeleteMemories(getActivity(), listener)
                 .execute(getListView().getCheckedItemIds());
           }
         })

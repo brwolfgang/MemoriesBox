@@ -7,13 +7,13 @@ import android.os.AsyncTask;
 /**
  * Created by Wolfgang on 04/04/2015.
  */
-public class DeleteMemoryTask extends AsyncTask<long[], Void, Void> {
+public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   private Context mContext;
   private ProgressDialog mProgressDialog;
-  private MemoriesRetrieveTask.TaskConclusionListener listener;
+  private TaskRetrieveMemories.TaskConclusionListener listener;
 
-  public DeleteMemoryTask(Context mContext, MemoriesRetrieveTask.TaskConclusionListener listener) {
+  public TaskDeleteMemories(Context mContext, TaskRetrieveMemories.TaskConclusionListener listener) {
     this.mContext = mContext;
     this.listener = listener;
     this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
@@ -37,7 +37,7 @@ public class DeleteMemoryTask extends AsyncTask<long[], Void, Void> {
 
   @Override
   protected void onPostExecute(Void avoid) {
-    new MemoriesRetrieveTask(listener).execute(MemoriesDataSource.getInstance(mContext));
+    new TaskRetrieveMemories(listener).execute(MemoriesDataSource.getInstance(mContext));
 
     if(mProgressDialog.isShowing())
       mProgressDialog.dismiss();
