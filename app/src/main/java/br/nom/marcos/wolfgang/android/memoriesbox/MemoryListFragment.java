@@ -158,11 +158,8 @@ public class MemoryListFragment extends ListFragment implements
           @Override
           public void onClick(DialogInterface dialog, int which) {
             Log.i(TAG, "Memories to delete: " + getListView().getCheckedItemCount());
-            for (Long id : getListView().getCheckedItemIds())
-              MemoriesDataSource.getInstance(getActivity().getApplicationContext()).deleteMemory(id);
-
-            new MemoriesRetrieveTask(listener)
-                .execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
+            new DeleteMemoryTask(getActivity(), listener)
+                .execute(getListView().getCheckedItemIds());
           }
         })
         .setNegativeButton("No", null)
