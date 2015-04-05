@@ -11,14 +11,14 @@ public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   private Context mContext;
   private ProgressDialog mProgressDialog;
-  private TaskRetrieveMemories.TaskRetrieveMemoriesListener listener;
-
-  public TaskDeleteMemories(Context mContext, TaskRetrieveMemories.TaskRetrieveMemoriesListener listener) {
+  private TaskDeleteMemoriesListener listener;
+  public TaskDeleteMemories(Context mContext, TaskDeleteMemoriesListener listener) {
     this.mContext = mContext;
     this.listener = listener;
     this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
   }
 
+  // TODO extract string resources
   @Override
   protected void onPreExecute() {
     mProgressDialog.setMessage("Deleting memories...");
@@ -37,9 +37,13 @@ public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   @Override
   protected void onPostExecute(Void avoid) {
-    new TaskRetrieveMemories(listener).execute(MemoriesDataSource.getInstance(mContext));
-
     if(mProgressDialog.isShowing())
       mProgressDialog.dismiss();
+
+    listener.onMemoriesDeleted();
+  }
+
+  public interface TaskDeleteMemoriesListener {
+    public void onMemoriesDeleted();
   }
 }
