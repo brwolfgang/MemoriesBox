@@ -11,9 +11,9 @@ public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   private Context mContext;
   private ProgressDialog mProgressDialog;
-  private TaskRetrieveMemories.TaskConclusionListener listener;
+  private TaskRetrieveMemories.TaskRetrieveMemoriesListener listener;
 
-  public TaskDeleteMemories(Context mContext, TaskRetrieveMemories.TaskConclusionListener listener) {
+  public TaskDeleteMemories(Context mContext, TaskRetrieveMemories.TaskRetrieveMemoriesListener listener) {
     this.mContext = mContext;
     this.listener = listener;
     this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);

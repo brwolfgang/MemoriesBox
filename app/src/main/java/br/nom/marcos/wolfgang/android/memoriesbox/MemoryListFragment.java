@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * Created by Wolfgang on 31/03/2015.
  */
 public class MemoryListFragment extends ListFragment implements
-    TaskRetrieveMemories.TaskConclusionListener{
+    TaskRetrieveMemories.TaskRetrieveMemoriesListener {
 
   private static final String TAG = "MemoryListFragment";
   private AbsListView.MultiChoiceModeListener mMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
@@ -150,7 +150,7 @@ public class MemoryListFragment extends ListFragment implements
   }
 
   private void deleteMemoryFromDatabase() {
-    final TaskRetrieveMemories.TaskConclusionListener listener = this;
+    final TaskRetrieveMemories.TaskRetrieveMemoriesListener listener = this;
     new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
         .setTitle("Delete selected memories?")
         .setMessage("Deleted memories cannot be recovered")

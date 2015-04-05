@@ -8,9 +8,9 @@ import android.os.AsyncTask;
  */
 public class TaskRetrieveMemories extends AsyncTask<MemoriesDataSource, Void, Cursor> {
 
-  TaskConclusionListener listener;
+  TaskRetrieveMemoriesListener listener;
 
-  public TaskRetrieveMemories(TaskConclusionListener listener) {
+  public TaskRetrieveMemories(TaskRetrieveMemoriesListener listener) {
     this.listener = listener;
   }
 
@@ -26,7 +26,7 @@ public class TaskRetrieveMemories extends AsyncTask<MemoriesDataSource, Void, Cu
     this.listener.onMemoriesRetrieved(cursor);
   }
 
-  public interface TaskConclusionListener{
+  public interface TaskRetrieveMemoriesListener {
     public void onMemoriesRetrieved(Cursor cursor);
   }
 }
