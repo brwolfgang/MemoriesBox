@@ -1,8 +1,9 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by Wolfgang on 04/04/2015.
@@ -10,18 +11,20 @@ import android.os.AsyncTask;
 public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
 
   private Context mContext;
-  private ProgressDialog mProgressDialog;
+  private MaterialDialog mMaterialProgressDialog;
   private TaskSaveMemoryListener listener;
   public TaskSaveMemory(Context mContext, TaskSaveMemoryListener listener) {
     this.mContext = mContext;
     this.listener = listener;
-    this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+    this.mMaterialProgressDialog = new MaterialDialog.Builder(mContext)
+        .progress(true, 100)
+        .content("Saving memory...")
+        .build();
   }
 
   @Override
   protected void onPreExecute() {
-    mProgressDialog.setMessage(mContext.getString(R.string.memoy_save_progress_dialog));
-    mProgressDialog.show();
+    mMaterialProgressDialog.show();
   }
 
   @Override
@@ -44,8 +47,8 @@ public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
 
   @Override
   protected void onPostExecute(Memory memory) {
-    if(mProgressDialog.isShowing())
-      mProgressDialog.dismiss();
+    if(mMaterialProgressDialog.isShowing())
+      mMaterialProgressDialog.dismiss();
 
     listener.onMemorySaved(memory);
   }

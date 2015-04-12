@@ -1,10 +1,8 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +17,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.Calendar;
 
@@ -213,14 +213,15 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     memoryID[0] = memory != null ? memory.getId() : 0;
 
     // TODO extract string resources
-    // TODO use TaskDeleteMemory
-    new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-        .setTitle("Delete memory?")
-        .setMessage("A deleted memory cannot be recovered")
-        .setNegativeButton("No", null)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    new MaterialDialog.Builder(getActivity())
+        .title("Delete memory?")
+        .content("A deleted memory cannot be recovered.")
+        .negativeText("Cancel")
+        .positiveText("Delete")
+        .callback(new MaterialDialog.ButtonCallback() {
           @Override
-          public void onClick(DialogInterface dialog, int which) {
+          public void onPositive(MaterialDialog dialog) {
+            super.onPositive(dialog);
             new TaskDeleteMemories(getActivity(), listener).execute(memoryID);
           }
         })

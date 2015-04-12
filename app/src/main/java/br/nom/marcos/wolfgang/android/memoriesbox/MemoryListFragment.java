@@ -1,8 +1,6 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -15,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.sql.SQLException;
 
@@ -153,18 +153,21 @@ public class MemoryListFragment extends ListFragment implements
     final TaskDeleteMemories.TaskDeleteMemoriesListener listener =
         (TaskDeleteMemories.TaskDeleteMemoriesListener) getActivity();
 
-    new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-        .setTitle("Delete selected memories?")
-        .setMessage("Deleted memories cannot be recovered")
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    //TODO export string resources
+    new MaterialDialog.Builder(this.getActivity())
+        .title("Delete selected memories?")
+        .content("Deleted memories cannot be recovered.")
+        .positiveText("Delete")
+        .negativeText("Cancel")
+        .callback(new MaterialDialog.ButtonCallback() {
           @Override
-          public void onClick(DialogInterface dialog, int which) {
+          public void onPositive(MaterialDialog dialog) {
+            super.onPositive(dialog);
             Log.i(TAG, "Memories to delete: " + getListView().getCheckedItemCount());
             new TaskDeleteMemories(getActivity(), listener)
                 .execute(getListView().getCheckedItemIds());
           }
         })
-        .setNegativeButton("No", null)
         .show();
   }
 

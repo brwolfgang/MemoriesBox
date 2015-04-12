@@ -1,8 +1,9 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by Wolfgang on 04/04/2015.
@@ -10,19 +11,20 @@ import android.os.AsyncTask;
 public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   private Context mContext;
-  private ProgressDialog mProgressDialog;
+  private MaterialDialog mMaterialProgressDialog;
   private TaskDeleteMemoriesListener listener;
   public TaskDeleteMemories(Context mContext, TaskDeleteMemoriesListener listener) {
     this.mContext = mContext;
     this.listener = listener;
-    this.mProgressDialog = new ProgressDialog(mContext, ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+    mMaterialProgressDialog = new MaterialDialog.Builder(mContext)
+        .content("Deleting memories...")
+        .progress(true, 100).build();
   }
 
   // TODO extract string resources
   @Override
   protected void onPreExecute() {
-    mProgressDialog.setMessage("Deleting memories...");
-    mProgressDialog.show();
+    mMaterialProgressDialog.show();
   }
 
   @Override
@@ -37,8 +39,8 @@ public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   @Override
   protected void onPostExecute(Void avoid) {
-    if(mProgressDialog.isShowing())
-      mProgressDialog.dismiss();
+    if(mMaterialProgressDialog.isShowing())
+      mMaterialProgressDialog.dismiss();
 
     listener.onMemoriesDeleted();
   }
