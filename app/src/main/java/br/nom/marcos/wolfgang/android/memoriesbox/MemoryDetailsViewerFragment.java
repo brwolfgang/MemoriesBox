@@ -89,6 +89,17 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
       case R.id.details_viewer_action_delete:
         deleteMemory();
         break;
+      case R.id.details_viewer_action_add_image:
+        new MaterialDialog.Builder(getActivity())
+            .items(R.array.memory_viewer_pick_image)
+            .title(R.string.memory_viewer_action_add_image)
+            .itemsCallback(new MaterialDialog.ListCallback() {
+              @Override
+              public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                Log.i(TAG, String.valueOf(i));
+              }
+            })
+            .show();
       default:
         break;
     }

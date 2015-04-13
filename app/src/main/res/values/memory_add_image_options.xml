@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="memory_viewer_pick_image">
+        <item>From camera</item>
+        <item>From gallery</item>
+    </string-array>
+</resources>
