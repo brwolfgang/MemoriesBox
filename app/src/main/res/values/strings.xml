@@ -9,10 +9,11 @@
     <string name="memory_list_action_mode_delete">Delete memory</string>
 
     <string name="memory_viewer_action_title">Memory Viewer</string>
+    <string name="memory_viewer_action_delete">Delete memory</string>
+    <string name="memory_viewer_action_add_image">Add image to memory</string>
     <string name="memory_viewer_action_save">Save Memory</string>
     <string name="memory_viewer_description_title">Memory Title</string>
     <string name="memory_viewer_description_content">Memory Description</string>
-    <string name="memory_viewer_action_delete">Delete memory</string>
 
     <string name="memoy_save_progress_dialog">Saving memory...</string>
 </resources>

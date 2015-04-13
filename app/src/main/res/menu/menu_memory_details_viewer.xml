@@ -2,13 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:memoriesbox="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/details_viewer_action_save"
-        android:icon="@drawable/ic_action_accept"
-        android:title="@string/memory_viewer_action_save"
-        memoriesbox:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/details_viewer_action_delete"
         android:icon="@drawable/ic_action_discard"
         android:title="@string/memory_viewer_action_delete"
+        memoriesbox:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/details_viewer_action_add_image"
+        android:icon="@drawable/ic_action_new_picture"
+        android:title="@string/memory_viewer_action_add_image"
+        memoriesbox:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/details_viewer_action_save"
+        android:icon="@drawable/ic_action_accept"
+        android:title="@string/memory_viewer_action_save"
         memoriesbox:showAsAction="ifRoom"/>
 </menu>
