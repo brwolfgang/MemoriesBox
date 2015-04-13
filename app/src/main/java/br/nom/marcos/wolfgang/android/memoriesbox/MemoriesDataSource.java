@@ -19,11 +19,11 @@ public class MemoriesDataSource {
 
   private SQLiteDatabase database;
   private DatabaseUtil dbUtil;
-  private String[] allColumns = {DatabaseUtil.COLUMN_ID,
-      DatabaseUtil.COLUMN_TITLE,
-      DatabaseUtil.COLUMN_CONTENT,
-      DatabaseUtil.COLUMN_DATE,
-      DatabaseUtil.COLUMN_TIME};
+  private String[] allColumns = {DatabaseUtil.MEMORY_COLUMN_ID,
+      DatabaseUtil.MEMORY_COLUMN_TITLE,
+      DatabaseUtil.MEMORY_COLUMN_CONTENT,
+      DatabaseUtil.MEMORY_COLUMN_DATE,
+      DatabaseUtil.MEMORY_COLUMN_TIME};
 
   private MemoriesDataSource(Context context) {
     dbUtil = new DatabaseUtil(context);
@@ -50,12 +50,12 @@ public class MemoriesDataSource {
 
   public Memory createMemory(String title, String content, String date, String time) {
     ContentValues memoryContentValues = new ContentValues();
-    memoryContentValues.put(DatabaseUtil.COLUMN_TITLE, title);
-    memoryContentValues.put(DatabaseUtil.COLUMN_CONTENT, content);
-    memoryContentValues.put(DatabaseUtil.COLUMN_DATE, date);
-    memoryContentValues.put(DatabaseUtil.COLUMN_TIME, time);
+    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_TITLE, title);
+    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_CONTENT, content);
+    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_DATE, date);
+    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_TIME, time);
 
-    long insertID = database.insert(DatabaseUtil.TABLE_NAME, null, memoryContentValues);
+    long insertID = database.insert(DatabaseUtil.MEMORY_TABLE_NAME, null, memoryContentValues);
     Memory createdMemory = retrieveMemory(insertID);
 
     Log.i(TAG, "Memory created id: " + createdMemory.getId());
@@ -63,8 +63,8 @@ public class MemoriesDataSource {
   }
 
   public Memory retrieveMemory(long memoryId) {
-    Cursor cursor = database.query(DatabaseUtil.TABLE_NAME,
-        allColumns, DatabaseUtil.COLUMN_ID + " = " + memoryId,
+    Cursor cursor = database.query(DatabaseUtil.MEMORY_TABLE_NAME,
+        allColumns, DatabaseUtil.MEMORY_COLUMN_ID + " = " + memoryId,
         null, null, null, null);
 
     cursor.moveToFirst();
@@ -77,13 +77,13 @@ public class MemoriesDataSource {
   }
 
   public Cursor getAllMemories() {
-    Cursor cursor = database.query(DatabaseUtil.TABLE_NAME, allColumns, null, null, null, null, null);
+    Cursor cursor = database.query(DatabaseUtil.MEMORY_TABLE_NAME, allColumns, null, null, null, null, null);
     cursor.moveToFirst();
     return cursor;
   }
 
   public void deleteMemory(Long memoryID) {
-    database.delete(DatabaseUtil.TABLE_NAME, DatabaseUtil.COLUMN_ID + " = " + memoryID, null);
+    database.delete(DatabaseUtil.MEMORY_TABLE_NAME, DatabaseUtil.MEMORY_COLUMN_ID + " = " + memoryID, null);
     Log.i(TAG, "Memory id " + memoryID + " deleted");
   }
 
@@ -101,13 +101,13 @@ public class MemoriesDataSource {
 
   public Memory updateMemory(Memory memory) {
     ContentValues updateValues = new ContentValues();
-    updateValues.put(DatabaseUtil.COLUMN_TITLE, memory.getTitle());
-    updateValues.put(DatabaseUtil.COLUMN_CONTENT, memory.getContent());
-    updateValues.put(DatabaseUtil.COLUMN_DATE, memory.getDate());
-    updateValues.put(DatabaseUtil.COLUMN_TIME, memory.getTime());
+    updateValues.put(DatabaseUtil.MEMORY_COLUMN_TITLE, memory.getTitle());
+    updateValues.put(DatabaseUtil.MEMORY_COLUMN_CONTENT, memory.getContent());
+    updateValues.put(DatabaseUtil.MEMORY_COLUMN_DATE, memory.getDate());
+    updateValues.put(DatabaseUtil.MEMORY_COLUMN_TIME, memory.getTime());
 
-    database.update(DatabaseUtil.TABLE_NAME, updateValues,
-        DatabaseUtil.COLUMN_ID + " = " + memory.getId(), null);
+    database.update(DatabaseUtil.MEMORY_TABLE_NAME, updateValues,
+        DatabaseUtil.MEMORY_COLUMN_ID + " = " + memory.getId(), null);
 
     Log.i(TAG, "Memory id: " + memory.getId() + " updated");
     return retrieveMemory(memory.getId());
@@ -116,7 +116,7 @@ public class MemoriesDataSource {
   public void dropMemoriesTable() {
     try {
       open();
-      database.execSQL("drop table " + DatabaseUtil.TABLE_NAME);
+      database.execSQL("drop table " + DatabaseUtil.MEMORY_TABLE_NAME);
       close();
     } catch (SQLException e) {
       e.printStackTrace();

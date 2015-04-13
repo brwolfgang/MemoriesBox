@@ -136,9 +136,9 @@ public class MemoryListFragment extends ListFragment implements
 
   private void initMemoriesAdapter() {
     String[] columnsFrom = {
-        DatabaseUtil.COLUMN_TITLE,
-        DatabaseUtil.COLUMN_DATE,
-        DatabaseUtil.COLUMN_CONTENT};
+        DatabaseUtil.MEMORY_COLUMN_TITLE,
+        DatabaseUtil.MEMORY_COLUMN_DATE,
+        DatabaseUtil.MEMORY_COLUMN_CONTENT};
 
     int[] viewsTo = {
         R.id.memories_list_item_title,
