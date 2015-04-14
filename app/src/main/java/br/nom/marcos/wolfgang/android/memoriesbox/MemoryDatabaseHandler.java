@@ -45,7 +45,7 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
       IMAGE_COLUMN_MEMORY_ID,
       IMAGE_COLUMN_NAME};
 
-  private static final String TAG = "MemoryDataSource";
+  private static final String TAG = "MemoryDatabaseHandler";
   private SQLiteDatabase database;
 
   public MemoryDatabaseHandler(Context context) {
