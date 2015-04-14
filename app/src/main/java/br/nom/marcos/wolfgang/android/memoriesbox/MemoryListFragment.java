@@ -111,8 +111,6 @@ public class MemoryListFragment extends ListFragment implements
   }
 
   private void initResources(){
-    initDatabase();
-
     getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     getListView().setMultiChoiceModeListener(mMultiChoiceModeListener);
 
@@ -121,11 +119,6 @@ public class MemoryListFragment extends ListFragment implements
     initMemoriesAdapter();
 
     setListAdapter(memoryListAdapter);
-  }
-
-  // TODO Is this really necessary? Maybe RetrieveAllMemories() can deal with it?
-  private void initDatabase() {
-      new MemoryDatabaseHandler(getActivity().getApplicationContext()).open();
   }
 
   private void initMemoriesAdapter() {
