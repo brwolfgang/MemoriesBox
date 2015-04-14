@@ -3,6 +3,7 @@ package br.nom.marcos.wolfgang.android.memoriesbox;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -100,11 +101,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
               public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
                 switch(i) {
                   case 0:
-                    getActivity().startActivityForResult(
+                    startActivityForResult(
                         ImageCaptureController.getInstance().getCameraIntent(), pickImageCameraCode);
                     break;
                   case 1:
-                    getActivity().startActivityForResult(
+                    startActivityForResult(
                         ImageCaptureController.getInstance().getGalleryIntent(), pickImageGalleryCode);
                     break;
                   default:
@@ -117,6 +118,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
         break;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.i(TAG, "Result received!");
   }
 
   @Override
