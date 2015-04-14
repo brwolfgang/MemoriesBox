@@ -49,7 +49,7 @@ public class ImageCaptureController {
 
   private File createTemporaryImageFile() throws IOException {
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-    String imageFileName = "MB_" + timeStamp + "_";
+    String imageFileName = "MB_" + timeStamp;
 
     File storageDir = Environment.getExternalStoragePublicDirectory(
         Environment.DIRECTORY_PICTURES);
