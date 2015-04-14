@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 /**
  * Created by Wolfgang Marcos on 20/03/2015.
  */
-public class TaskRetrieveMemories extends AsyncTask<MemoriesDataSource, Void, Cursor> {
+public class TaskRetrieveMemories extends AsyncTask<MemoryDatabaseHandler, Void, Cursor> {
 
   TaskRetrieveMemoriesListener listener;
 
@@ -15,7 +15,7 @@ public class TaskRetrieveMemories extends AsyncTask<MemoriesDataSource, Void, Cu
   }
 
   @Override
-  protected Cursor doInBackground(MemoriesDataSource... params) {
+  protected Cursor doInBackground(MemoryDatabaseHandler... params) {
     return params[0].getAllMemories();
   }
 

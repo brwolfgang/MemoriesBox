@@ -118,7 +118,7 @@ public class MemoryListFragment extends ListFragment implements
     getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     getListView().setMultiChoiceModeListener(mMultiChoiceModeListener);
 
-    new TaskRetrieveMemories(this).execute(MemoriesDataSource.getInstance(getActivity().getApplicationContext()));
+    new TaskRetrieveMemories(this).execute(MemoryDatabaseHandler.getInstance(getActivity().getApplicationContext()));
 
     initMemoriesAdapter();
 
@@ -127,7 +127,7 @@ public class MemoryListFragment extends ListFragment implements
 
   private void initDatabase() {
     try {
-      MemoriesDataSource.getInstance(getActivity().getApplicationContext()).open();
+      MemoryDatabaseHandler.getInstance(getActivity().getApplicationContext()).open();
     } catch (SQLException e) {
       e.printStackTrace();
       System.err.println(e.getCause());
@@ -136,9 +136,9 @@ public class MemoryListFragment extends ListFragment implements
 
   private void initMemoriesAdapter() {
     String[] columnsFrom = {
-        DatabaseUtil.MEMORY_COLUMN_TITLE,
-        DatabaseUtil.MEMORY_COLUMN_DATE,
-        DatabaseUtil.MEMORY_COLUMN_CONTENT};
+        MemoryDatabaseHandler.MEMORY_COLUMN_TITLE,
+        MemoryDatabaseHandler.MEMORY_COLUMN_DATE,
+        MemoryDatabaseHandler.MEMORY_COLUMN_CONTENT};
 
     int[] viewsTo = {
         R.id.memories_list_item_title,

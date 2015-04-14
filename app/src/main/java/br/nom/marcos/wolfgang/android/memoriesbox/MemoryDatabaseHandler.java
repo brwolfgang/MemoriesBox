@@ -12,7 +12,7 @@ import java.sql.SQLException;
 /**
  * Created by Wolfgang Marcos on 17/03/2015.
  */
-public class MemoriesDataSource extends SQLiteOpenHelper{
+public class MemoryDatabaseHandler extends SQLiteOpenHelper{
 
   public static final String DATABASE_NAME = "memoryBox";
   public static final String MEMORY_TABLE_NAME = "memory";
@@ -45,7 +45,7 @@ public class MemoriesDataSource extends SQLiteOpenHelper{
   private static final String TAG = "MemoryDataSource";
   private SQLiteDatabase database;
 
-  public MemoriesDataSource(Context context) {
+  public MemoryDatabaseHandler(Context context) {
     super(context, DATABASE_NAME, null, 1);
   }
 

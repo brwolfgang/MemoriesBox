@@ -29,7 +29,7 @@ public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
 
   @Override
   protected Memory doInBackground(Memory... params) {
-    MemoriesDataSource mds = MemoriesDataSource.getInstance(mContext);
+    MemoryDatabaseHandler mds = MemoryDatabaseHandler.getInstance(mContext);
     Memory memory = params[0];
 
     if (memory.getId() == 0) {

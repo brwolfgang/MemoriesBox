@@ -29,7 +29,7 @@ public class TaskDeleteMemories extends AsyncTask<long[], Void, Void> {
 
   @Override
   protected Void doInBackground(long[]... params) {
-    MemoriesDataSource mds = MemoriesDataSource.getInstance(mContext);
+    MemoryDatabaseHandler mds = MemoryDatabaseHandler.getInstance(mContext);
 
     for(long id : params[0])
       mds.deleteMemory(id);
