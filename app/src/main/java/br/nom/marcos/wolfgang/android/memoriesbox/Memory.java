@@ -9,6 +9,27 @@ public class Memory {
   private String content;
   private String date;
   private String time;
+  private String[] imageList;
+
+  public Memory() {
+  }
+
+  public Memory(long id, String title, String content, String date, String time, String[] imageList) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.date = date;
+    this.time = time;
+    this.imageList = imageList;
+  }
+
+  public Memory(String title, String content, String date, String time, String[] imageList) {
+    this.title = title;
+    this.content = content;
+    this.date = date;
+    this.time = time;
+    this.imageList = imageList;
+  }
 
   public long getId() {
     return id;
@@ -48,5 +69,13 @@ public class Memory {
 
   public void setTime(String time) {
     this.time = time;
+  }
+
+  public String[] getImageList() {
+    return imageList;
+  }
+
+  public void setImageList(String[] imageList) {
+    this.imageList = imageList;
   }
 }
