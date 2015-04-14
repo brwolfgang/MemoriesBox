@@ -28,6 +28,8 @@ import java.util.Calendar;
 public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener{
 
   private static final String TAG = "MemoryDetailsViewer";
+  public int pickImageCameraCode = 0;
+  public int pickImageGalleryCode = 1;
   private EditText memoryTitle;
   private EditText memoryContent;
   private TextView memoryDate;
@@ -96,7 +98,18 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
             .itemsCallback(new MaterialDialog.ListCallback() {
               @Override
               public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                Log.i(TAG, String.valueOf(i));
+                switch(i) {
+                  case 0:
+                    getActivity().startActivityForResult(
+                        ImageCaptureController.getInstance().getCameraIntent(), pickImageCameraCode);
+                    break;
+                  case 1:
+                    getActivity().startActivityForResult(
+                        ImageCaptureController.getInstance().getGalleryIntent(), pickImageGalleryCode);
+                    break;
+                  default:
+                    break;
+                }
               }
             })
             .show();
