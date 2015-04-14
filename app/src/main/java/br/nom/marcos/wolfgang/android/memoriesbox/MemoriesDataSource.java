@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.sql.SQLException;
@@ -11,51 +12,80 @@ import java.sql.SQLException;
 /**
  * Created by Wolfgang Marcos on 17/03/2015.
  */
-public class MemoriesDataSource {
+public class MemoriesDataSource extends SQLiteOpenHelper{
 
+  public static final String DATABASE_NAME = "memoryBox";
+  public static final String MEMORY_TABLE_NAME = "memory";
+  public static final String MEMORY_COLUMN_ID = "_id";
+  public static final String MEMORY_COLUMN_TITLE = "title";
+  public static final String MEMORY_COLUMN_CONTENT = "content";
+  public static final String MEMORY_COLUMN_DATE = "date";
+  public static final String MEMORY_COLUMN_TIME = "time";
+  private static final String CREATE_TABLE_MEMORY = "CREATE TABLE "
+      + MEMORY_TABLE_NAME + "("
+      + MEMORY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+      + MEMORY_COLUMN_TITLE + " TEXT NOT NULL, "
+      + MEMORY_COLUMN_CONTENT + " TEXT NOT NULL, "
+      + MEMORY_COLUMN_DATE + " TEXT NOT NULL, "
+      + MEMORY_COLUMN_TIME + " TEXT NOT NULL);";
+  private String[] allColumns = {MEMORY_COLUMN_ID,
+      MEMORY_COLUMN_TITLE,
+      MEMORY_COLUMN_CONTENT,
+      MEMORY_COLUMN_DATE,
+      MEMORY_COLUMN_TIME};
+  public static final String IMAGE_TABLE_NAME =  "image";
+  public static final String IMAGE_COLUMN_ID = "_id";
+  public static final String IMAGE_COLUMN_MEMORY_ID = "memory_id";
+  public static final String IMAGE_COLUMN_NAME = "image_path";
+  private static final String CREATE_TABLE_IMAGES = "CREATE TABLE "
+      + IMAGE_TABLE_NAME + "("
+      + IMAGE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+      + IMAGE_COLUMN_MEMORY_ID + " INTEGER NOT NULL, "
+      + IMAGE_COLUMN_NAME+ " TEXT NOT NULL);";
   private static final String TAG = "MemoryDataSource";
-
-  private static MemoriesDataSource mds;
-
   private SQLiteDatabase database;
-  private DatabaseUtil dbUtil;
-  private String[] allColumns = {DatabaseUtil.MEMORY_COLUMN_ID,
-      DatabaseUtil.MEMORY_COLUMN_TITLE,
-      DatabaseUtil.MEMORY_COLUMN_CONTENT,
-      DatabaseUtil.MEMORY_COLUMN_DATE,
-      DatabaseUtil.MEMORY_COLUMN_TIME};
 
-  private MemoriesDataSource(Context context) {
-    dbUtil = new DatabaseUtil(context);
+  public MemoriesDataSource(Context context) {
+    super(context, DATABASE_NAME, null, 1);
   }
 
-  public static MemoriesDataSource getInstance(Context context) {
-    if (mds == null)
-      mds = new MemoriesDataSource(context);
-
-    return mds;
-  }
-
-  public void open() throws SQLException {
-    if (database == null) {
-      database = dbUtil.getWritableDatabase();
-      Log.i(TAG, "Database was opened");
+  @Override
+  public void onCreate(SQLiteDatabase db) {
+    try {
+      Log.i(TAG, "Creating database");
+      db.execSQL(CREATE_TABLE_MEMORY);
+      db.execSQL(CREATE_TABLE_IMAGES);
+      Log.i(TAG, "Database created successfully");
+    } catch (android.database.SQLException e) {
+      Log.i(TAG, "Database creation failed");
+      e.printStackTrace();
+      System.err.println(e.getCause() == null ? "No cause was given" : e.getCause());
     }
   }
 
+  @Override
+  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+  }
+
+  public void open() throws SQLException {
+      database = this.getWritableDatabase();
+      Log.i(TAG, "Database was opened");
+  }
+
   public void close() {
-    dbUtil.close();
-    database = null;
+    database.close();
+    Log.i(TAG, "Database was closed");
   }
 
   public Memory createMemory(String title, String content, String date, String time) {
     ContentValues memoryContentValues = new ContentValues();
-    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_TITLE, title);
-    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_CONTENT, content);
-    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_DATE, date);
-    memoryContentValues.put(DatabaseUtil.MEMORY_COLUMN_TIME, time);
+    memoryContentValues.put(MEMORY_COLUMN_TITLE, title);
+    memoryContentValues.put(MEMORY_COLUMN_CONTENT, content);
+    memoryContentValues.put(MEMORY_COLUMN_DATE, date);
+    memoryContentValues.put(MEMORY_COLUMN_TIME, time);
 
-    long insertID = database.insert(DatabaseUtil.MEMORY_TABLE_NAME, null, memoryContentValues);
+    long insertID = database.insert(MEMORY_TABLE_NAME, null, memoryContentValues);
     Memory createdMemory = retrieveMemory(insertID);
 
     Log.i(TAG, "Memory created id: " + createdMemory.getId());
@@ -63,8 +93,8 @@ public class MemoriesDataSource {
   }
 
   public Memory retrieveMemory(long memoryId) {
-    Cursor cursor = database.query(DatabaseUtil.MEMORY_TABLE_NAME,
-        allColumns, DatabaseUtil.MEMORY_COLUMN_ID + " = " + memoryId,
+    Cursor cursor = database.query(MEMORY_TABLE_NAME,
+        allColumns, MEMORY_COLUMN_ID + " = " + memoryId,
         null, null, null, null);
 
     cursor.moveToFirst();
@@ -77,13 +107,13 @@ public class MemoriesDataSource {
   }
 
   public Cursor getAllMemories() {
-    Cursor cursor = database.query(DatabaseUtil.MEMORY_TABLE_NAME, allColumns, null, null, null, null, null);
+    Cursor cursor = database.query(MEMORY_TABLE_NAME, allColumns, null, null, null, null, null);
     cursor.moveToFirst();
     return cursor;
   }
 
   public void deleteMemory(Long memoryID) {
-    database.delete(DatabaseUtil.MEMORY_TABLE_NAME, DatabaseUtil.MEMORY_COLUMN_ID + " = " + memoryID, null);
+    database.delete(MEMORY_TABLE_NAME, MEMORY_COLUMN_ID + " = " + memoryID, null);
     Log.i(TAG, "Memory id " + memoryID + " deleted");
   }
 
@@ -101,13 +131,13 @@ public class MemoriesDataSource {
 
   public Memory updateMemory(Memory memory) {
     ContentValues updateValues = new ContentValues();
-    updateValues.put(DatabaseUtil.MEMORY_COLUMN_TITLE, memory.getTitle());
-    updateValues.put(DatabaseUtil.MEMORY_COLUMN_CONTENT, memory.getContent());
-    updateValues.put(DatabaseUtil.MEMORY_COLUMN_DATE, memory.getDate());
-    updateValues.put(DatabaseUtil.MEMORY_COLUMN_TIME, memory.getTime());
+    updateValues.put(MEMORY_COLUMN_TITLE, memory.getTitle());
+    updateValues.put(MEMORY_COLUMN_CONTENT, memory.getContent());
+    updateValues.put(MEMORY_COLUMN_DATE, memory.getDate());
+    updateValues.put(MEMORY_COLUMN_TIME, memory.getTime());
 
-    database.update(DatabaseUtil.MEMORY_TABLE_NAME, updateValues,
-        DatabaseUtil.MEMORY_COLUMN_ID + " = " + memory.getId(), null);
+    database.update(MEMORY_TABLE_NAME, updateValues,
+        MEMORY_COLUMN_ID + " = " + memory.getId(), null);
 
     Log.i(TAG, "Memory id: " + memory.getId() + " updated");
     return retrieveMemory(memory.getId());
@@ -116,7 +146,17 @@ public class MemoriesDataSource {
   public void dropMemoriesTable() {
     try {
       open();
-      database.execSQL("drop table " + DatabaseUtil.MEMORY_TABLE_NAME);
+      database.execSQL("drop table " + MEMORY_TABLE_NAME);
+      close();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void dropImagesTable() {
+    try {
+      open();
+      database.execSQL("drop table " + IMAGE_TABLE_NAME);
       close();
     } catch (SQLException e) {
       e.printStackTrace();
