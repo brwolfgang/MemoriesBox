@@ -13,6 +13,8 @@ public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
   private Context mContext;
   private MaterialDialog mMaterialProgressDialog;
   private TaskSaveMemoryListener listener;
+
+  // TODO extract string resources
   public TaskSaveMemory(Context mContext, TaskSaveMemoryListener listener) {
     this.mContext = mContext;
     this.listener = listener;
@@ -29,7 +31,7 @@ public class TaskSaveMemory extends AsyncTask<Memory, Void, Memory> {
 
   @Override
   protected Memory doInBackground(Memory... params) {
-    MemoryDatabaseHandler mds = MemoryDatabaseHandler.getInstance(mContext);
+    MemoryDatabaseHandler mds = new MemoryDatabaseHandler(mContext);
     Memory memory = params[0];
 
     if (memory.getId() == 0) {

@@ -16,8 +16,6 @@ import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.sql.SQLException;
-
 /**
  * Created by Wolfgang on 31/03/2015.
  */
@@ -118,20 +116,16 @@ public class MemoryListFragment extends ListFragment implements
     getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
     getListView().setMultiChoiceModeListener(mMultiChoiceModeListener);
 
-    new TaskRetrieveMemories(this).execute(MemoryDatabaseHandler.getInstance(getActivity().getApplicationContext()));
+    new TaskRetrieveMemories(this).execute(new MemoryDatabaseHandler(getActivity().getApplicationContext()));
 
     initMemoriesAdapter();
 
     setListAdapter(memoryListAdapter);
   }
 
+  // TODO Is this really necessary? Maybe RetrieveAllMemories() can deal with it?
   private void initDatabase() {
-    try {
-      MemoryDatabaseHandler.getInstance(getActivity().getApplicationContext()).open();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      System.err.println(e.getCause());
-    }
+      new MemoryDatabaseHandler(getActivity().getApplicationContext()).open();
   }
 
   private void initMemoriesAdapter() {

@@ -69,7 +69,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
       if(id == -1) {
         cleanMemoryDetailsViewerFragment();
       }else{
-        memory = MemoryDatabaseHandler.getInstance(getActivity().getApplicationContext())
+        memory = new MemoryDatabaseHandler(getActivity().getApplicationContext())
             .retrieveMemory(getArguments().getLong("memoryID"));
         loadMemoryData();
       }

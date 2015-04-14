@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
 
   @Override
   public void onMemoriesDeleted() {
-    new TaskRetrieveMemories(memoryListFragment).execute(MemoryDatabaseHandler.getInstance(this));
+    new TaskRetrieveMemories(memoryListFragment).execute(new MemoryDatabaseHandler(this));
     loadMemoryListView();
   }
 
