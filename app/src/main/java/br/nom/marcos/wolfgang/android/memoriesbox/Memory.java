@@ -1,5 +1,7 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
+import java.util.LinkedList;
+
 /**
  * Created by Wolfgang Marcos on 17/03/2015.
  */
@@ -9,12 +11,13 @@ public class Memory {
   private String content;
   private String date;
   private String time;
-  private String[] imageList;
+  // TODO change imageList to a LinkedList
+  private LinkedList<MemoryImage> imageList;
 
   public Memory() {
   }
 
-  public Memory(long id, String title, String content, String date, String time, String[] imageList) {
+  public Memory(long id, String title, String content, String date, String time, LinkedList<MemoryImage> imageList) {
     this.id = id;
     this.title = title;
     this.content = content;
@@ -23,7 +26,7 @@ public class Memory {
     this.imageList = imageList;
   }
 
-  public Memory(String title, String content, String date, String time, String[] imageList) {
+  public Memory(String title, String content, String date, String time, LinkedList<MemoryImage> imageList) {
     this.title = title;
     this.content = content;
     this.date = date;
@@ -71,11 +74,11 @@ public class Memory {
     this.time = time;
   }
 
-  public String[] getImageList() {
+  public LinkedList<MemoryImage> getImageList() {
     return imageList;
   }
 
-  public void setImageList(String[] imageList) {
+  public void setImageList(LinkedList<MemoryImage> imageList) {
     this.imageList = imageList;
   }
 }
