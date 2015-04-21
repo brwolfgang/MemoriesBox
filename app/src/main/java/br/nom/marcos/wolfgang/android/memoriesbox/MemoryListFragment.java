@@ -16,9 +16,6 @@ import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-/**
- * Created by Wolfgang on 31/03/2015.
- */
 public class MemoryListFragment extends ListFragment implements
     TaskRetrieveMemories.TaskRetrieveMemoriesListener {
 
@@ -79,7 +76,7 @@ public class MemoryListFragment extends ListFragment implements
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.memory_list_fragment, container, false);
+    View view = inflater.inflate(R.layout.fragment_memory_list, container, false);
     setHasOptionsMenu(true);
     return view;
   }

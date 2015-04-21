@@ -25,9 +25,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.Calendar;
 
-/**
- * Created by Wolfgang Marcos on 30/03/2015.
- */
 public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener{
 
   private static final String TAG = "MemoryDetailsViewer";
@@ -44,7 +41,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.activity_memory_viewer, container, false);
+    View view = inflater.inflate(R.layout.fragment_memory_viewer, container, false);
     setHasOptionsMenu(true);
     return view;
   }
