@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -29,14 +31,15 @@ import java.util.Calendar;
 public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener{
 
   private static final String TAG = "MemoryDetailsViewer";
-  public int pickImageCameraCode = 0;
-  public int pickImageGalleryCode = 1;
+  private final int pickImageCameraCode = 0;
+  private final int pickImageGalleryCode = 1;
   private EditText memoryTitle;
   private EditText memoryContent;
   private TextView memoryDate;
   private TextView memoryTime;
   private Memory memory;
   private MemoryDetailsViewerFragmentListener listener;
+  private Uri capturedImageURI;
 
   @Nullable
   @Override
@@ -96,23 +99,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
         new MaterialDialog.Builder(getActivity())
             .items(R.array.memory_viewer_pick_image)
             .title(R.string.memory_viewer_action_add_image)
-            .itemsCallback(new MaterialDialog.ListCallback() {
-              @Override
-              public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                switch(i) {
-                  case 0:
-                    startActivityForResult(
-                        ImageCaptureController.getInstance().getCameraIntent(), pickImageCameraCode);
-                    break;
-                  case 1:
-                    startActivityForResult(
-                        ImageCaptureController.getInstance().getGalleryIntent(), pickImageGalleryCode);
-                    break;
-                  default:
-                    break;
-                }
-              }
-            })
+            .itemsCallback(new PickImageCallback())
             .show();
       default:
         break;
@@ -123,6 +110,15 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     Log.i(TAG, "Result received!");
+    if (resultCode == Activity.RESULT_OK)
+      switch (requestCode){
+        case pickImageCameraCode:
+          Log.i(TAG, "Image from camera received");
+          break;
+        case pickImageGalleryCode:
+          Log.i(TAG,"Image from gallery received");
+          break;
+      }
   }
 
   @Override
@@ -260,5 +256,29 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
   public interface MemoryDetailsViewerFragmentListener {
     public void onMemorySaved();
+  }
+
+  private class PickImageCallback implements MaterialDialog.ListCallback{
+    @Override
+    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+      switch (i) {
+        case 0:
+          capturedImageURI = ImageCaptureUtil.createTemporaryImageFile();
+          if (capturedImageURI != null){
+            startActivityForResult(
+                ImageCaptureUtil.getCameraIntent(
+                    capturedImageURI), pickImageCameraCode);
+          }else{
+            Toast.makeText(getActivity(), "There was an error handling this request", Toast.LENGTH_SHORT).show();
+          }
+          break;
+        case 1:
+          startActivityForResult(
+              ImageCaptureUtil.getGalleryIntent(), pickImageGalleryCode);
+          break;
+        default:
+          break;
+      }
+    }
   }
 }
