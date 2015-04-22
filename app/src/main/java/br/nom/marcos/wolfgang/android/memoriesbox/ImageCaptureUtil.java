@@ -1,6 +1,8 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -11,17 +13,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Wolfgang on 13/04/2015.
- */
 public class ImageCaptureUtil {
   private final static String TAG = "ImageCaptureUtil";
 
   public static Intent getCameraIntent(Uri destinationFile) {
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      takePictureIntent.putExtra(
-          MediaStore.EXTRA_OUTPUT,
-          destinationFile);
+    takePictureIntent.putExtra(
+        MediaStore.EXTRA_OUTPUT,
+        destinationFile);
     return takePictureIntent;
   }
 
@@ -64,5 +63,19 @@ public class ImageCaptureUtil {
     Log.i(TAG, "MemoryBox Dir " + memoriesBoxAlbum.toString());
 
     return memoriesBoxAlbum;
+  }
+
+  public static String getRealPathFromURI(Context context, Uri contentURI) {
+    String result;
+    Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
+    if (cursor == null) {
+      result = contentURI.getPath();
+    } else {
+      cursor.moveToFirst();
+      int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+      result = cursor.getString(idx);
+      cursor.close();
+    }
+    return result;
   }
 }
