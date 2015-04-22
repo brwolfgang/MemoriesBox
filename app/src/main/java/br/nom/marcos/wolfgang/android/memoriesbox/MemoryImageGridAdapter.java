@@ -1,7 +1,6 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,6 +8,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.LinkedList;
 
 public class MemoryImageGridAdapter extends BaseAdapter {
@@ -20,6 +20,11 @@ public class MemoryImageGridAdapter extends BaseAdapter {
   public MemoryImageGridAdapter(Context context, LinkedList<MemoryImage> images) {
     this.context = context;
     this.images = images;
+  }
+
+  @Override
+  public boolean hasStableIds() {
+    return true;
   }
 
   @Override
@@ -50,13 +55,12 @@ public class MemoryImageGridAdapter extends BaseAdapter {
     Picasso.with(context).setIndicatorsEnabled(true);
 
     Picasso.with(context)
-        .load(images.get(position).getImagePath())
+        .load(new File(images.get(position).getImagePath()))
         .resize(250,250)
         .centerCrop()
         .placeholder(R.drawable.loading)
+        .error(R.drawable.error)
         .into(imageView);
-    Log.i(TAG, "Picasso is loading image " + images.get(position).getImageID()
-        + " from memory " + images.get(position).getMemoryID());
     return imageView;
   }
 }
