@@ -103,15 +103,15 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
     return createdMemory;
   }
 
-  public Memory retrieveMemory(long memoryId) {
+  public Memory retrieveMemory(long memoryID) {
     this.open();
     Cursor memoryCursor = database.query(MEMORY_TABLE_NAME,
-        allMemoryColumns, MEMORY_COLUMN_ID + " = " + memoryId,
+        allMemoryColumns, MEMORY_COLUMN_ID + " = " + memoryID,
         null, null, null, null);
 
     memoryCursor.moveToFirst();
     Memory retrievedMemory = cursorToMemory(memoryCursor);
-    Log.i(TAG, "Memory id: " + memoryId + " retrieved");
+    Log.i(TAG, "Memory id: " + memoryID + " retrieved");
 
     memoryCursor.close();
 
@@ -120,6 +120,20 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
     this.close();
 
     return retrievedMemory;
+  }
+
+  public MemoryImage retrieveImage(long imageID){
+    this.open();
+    Cursor imageCursor = database.query(IMAGE_TABLE_NAME,
+        allImageColumns, IMAGE_COLUMN_ID + " = " + imageID,
+        null, null, null, null);
+
+    LinkedList<MemoryImage> retrievedImagesList = cursorToImages(imageCursor);
+    Log.i(TAG, "Total images retrieved: " + retrievedImagesList.size());
+    MemoryImage retrievedImage = retrievedImagesList.get(0);
+    imageCursor.close();
+    this.close();
+    return retrievedImage;
   }
 
   public Memory updateMemory(Memory memory) {
