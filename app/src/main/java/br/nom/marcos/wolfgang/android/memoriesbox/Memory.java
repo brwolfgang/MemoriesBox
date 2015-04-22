@@ -11,7 +11,6 @@ public class Memory {
   private String content;
   private String date;
   private String time;
-  // TODO change imageList to a LinkedList
   private LinkedList<MemoryImage> imageList;
 
   public Memory() {
