@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.LinkedList;
+
 /**
  * Created by Wolfgang Marcos on 17/03/2015.
  */
@@ -103,17 +105,20 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
 
   public Memory retrieveMemory(long memoryId) {
     this.open();
-    Cursor cursor = database.query(MEMORY_TABLE_NAME,
+    Cursor memoryCursor = database.query(MEMORY_TABLE_NAME,
         allMemoryColumns, MEMORY_COLUMN_ID + " = " + memoryId,
         null, null, null, null);
 
-    cursor.moveToFirst();
-    Memory retrievedMemory = cursorToMemory(cursor);
+    memoryCursor.moveToFirst();
+    Memory retrievedMemory = cursorToMemory(memoryCursor);
+    Log.i(TAG, "Memory id: " + memoryId + " retrieved");
 
-    cursor.close();
+    memoryCursor.close();
+
+    retrievedMemory.setImageList(getImagesFromMemory(retrievedMemory.getId()));
+
     this.close();
 
-    Log.i(TAG, "Memory id: " + memoryId + " retrieved");
     return retrievedMemory;
   }
 
@@ -136,7 +141,15 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   public void deleteMemory(Long memoryID) {
     this.open();
     database.delete(MEMORY_TABLE_NAME, MEMORY_COLUMN_ID + " = " + memoryID, null);
+    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID, null);
     Log.i(TAG, "Memory id " + memoryID + " deleted");
+    this.close();
+  }
+
+  public void deleteImage(Long imageID){
+    this.open();
+    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_ID + " = " + imageID, null);
+    Log.i(TAG, "Image id " + imageID + " deleted");
     this.close();
   }
 
@@ -158,6 +171,48 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
 
     Log.i(TAG, "Cursor to Memory performed id: " + memory.getId());
     return memory;
+  }
+
+  public MemoryImage insertImage(MemoryImage memoryImage){
+    ContentValues imageContentValues = new ContentValues();
+    imageContentValues.put(IMAGE_COLUMN_MEMORY_ID, memoryImage.getMemoryID());
+    imageContentValues.put(IMAGE_COLUMN_NAME, memoryImage.getImagePath());
+
+    this.open();
+    Long imageID = database.insert(IMAGE_TABLE_NAME, null, imageContentValues);
+    Log.i(TAG, "Image inserted with ID " + imageID);
+    this.close();
+
+    memoryImage.setImageID(imageID);
+
+    return memoryImage;
+  }
+
+  public LinkedList<MemoryImage> getImagesFromMemory(Long memoryID){
+    Cursor imageCursor = database.query(IMAGE_TABLE_NAME,
+        allImageColumns, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID,
+        null, null, null, null);
+
+    LinkedList<MemoryImage> memoryImages = cursorToImages(imageCursor);
+
+    Log.i(TAG, "Total images loaded for memory " + memoryID + ": " + memoryImages.size());
+
+    imageCursor.close();
+
+    return memoryImages;
+  }
+
+  public LinkedList<MemoryImage> cursorToImages(Cursor cursor){
+    LinkedList<MemoryImage> memoryImages= new LinkedList<MemoryImage>();
+
+    if(cursor != null)
+      while(cursor.moveToNext()) {
+        memoryImages.add(new MemoryImage(
+            cursor.getLong(0),
+            cursor.getLong(1),
+            cursor.getString(2)));
+      }
+    return memoryImages;
   }
 
   public void dropMemoriesTable() {
