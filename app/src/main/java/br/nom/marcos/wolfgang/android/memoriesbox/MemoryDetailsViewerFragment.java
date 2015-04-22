@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -24,8 +25,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 
-public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener{
+public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener, TaskRetrieveImages.TaskRetrieveImagesListener,
+    TaskInsertImage.TaskInsertImageListener{
 
   private static final String TAG = "MemoryDetailsViewer";
   private final int pickImageCameraCode = 0;
@@ -34,9 +37,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   private EditText memoryContent;
   private TextView memoryDate;
   private TextView memoryTime;
+  private GridView memoryImageGrid;
   private Memory memory;
   private MemoryDetailsViewerFragmentListener listener;
   private Uri capturedImageURI;
+  private MemoryImageGridAdapter mMemoryImageGridAdapter;
 
   @Nullable
   @Override
@@ -93,6 +98,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
         deleteMemory();
         break;
       case R.id.details_viewer_action_add_image:
+        // TODO Handle a case where a image is inserted before the memory is saved
         new MaterialDialog.Builder(getActivity())
             .items(R.array.memory_viewer_pick_image)
             .title(R.string.memory_viewer_action_add_image)
@@ -111,9 +117,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
       switch (requestCode){
         case pickImageCameraCode:
           Log.i(TAG, "Image from camera received");
+          insertImageOnMemory(capturedImageURI);
           break;
         case pickImageGalleryCode:
           Log.i(TAG,"Image from gallery received");
+          insertImageOnMemory(data.getData());
           break;
       }
   }
@@ -135,12 +143,25 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     listener.onMemorySaved();
   }
 
+  @Override
+  public void onImagesRetrieved(LinkedList<MemoryImage> images) {
+    memory.setImageList(images);
+//    loadMemoryImages();
+  }
+
+  @Override
+  public void onImageInserted(MemoryImage memoryImage) {
+    memory.getImageList().add(memoryImage);
+    loadMemoryImages();
+  }
+
   private void initResources() {
     Activity activity = getActivity();
     memoryTitle = (EditText) activity.findViewById(R.id.memory_viewer_edit_title);
     memoryContent = (EditText) activity.findViewById(R.id.memory_viewer_edit_content);
     memoryDate = (TextView) activity.findViewById(R.id.memory_viewer_date);
     memoryTime = (TextView) activity.findViewById(R.id.memory_viewer_hour);
+    memoryImageGrid = (GridView) activity.findViewById(R.id.memory_viewer_grid);
 
     memoryDate.setText(getCurrentDate());
     memoryTime.setText(getCurrentTime());
@@ -165,9 +186,16 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     this.memoryContent.setText(memory.getContent());
     this.memoryDate.setText(memory.getDate());
     this.memoryTime.setText(memory.getTime());
+    loadMemoryImages();
+
     Log.i(TAG, "Memory ID " + memory.getId() + " data loaded");
   }
 
+  private void loadMemoryImages(){
+    mMemoryImageGridAdapter = new MemoryImageGridAdapter(getActivity(), memory.getImageList());
+    this.memoryImageGrid.invalidateViews();
+    this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
+  }
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
     return calendar.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -225,6 +253,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     this.memoryContent.setText("");
     this.memoryDate.setText(getCurrentDate());
     this.memoryTime.setText(getCurrentTime());
+    this.memoryImageGrid.setAdapter(null);
     Log.i(TAG, "Cleaned up for new use");
   }
 
@@ -249,6 +278,14 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
           }
         })
         .show();
+  }
+
+  private void insertImageOnMemory(Uri imageURI){
+    MemoryImage image = new MemoryImage();
+    image.setMemoryID(memory.getId());
+    image.setImagePath(imageURI.toString());
+
+    new TaskInsertImage(getActivity(), this).execute(image);
   }
 
   public interface MemoryDetailsViewerFragmentListener {
