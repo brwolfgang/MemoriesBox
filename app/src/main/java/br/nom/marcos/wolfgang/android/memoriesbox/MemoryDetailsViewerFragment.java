@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -31,6 +33,39 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     TaskInsertImage.TaskInsertImageListener{
 
   private static final String TAG = "MemoryDetailsViewer";
+  private AbsListView.MultiChoiceModeListener imageGridMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+      MenuInflater inflater = mode.getMenuInflater();
+      inflater.inflate(R.menu.memory_viewer_action_mode, menu);
+      Log.i(TAG, "ActionMode created");
+      return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+      return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+      switch (item.getItemId()){
+        case R.id.memory_viewer_action_mode_delete_image:
+          deleteSelectedImages();
+          return true;
+      }
+      return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
+    }
+  };
   private final int pickImageCameraCode = 0;
   private final int pickImageGalleryCode = 1;
   private EditText memoryTitle;
@@ -179,6 +214,9 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
         new TimePickerFragment().show(getFragmentManager(), "timepicker");
       }
     });
+
+    memoryImageGrid.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
+    memoryImageGrid.setMultiChoiceModeListener(imageGridMultiChoiceModeListener);
   }
 
   private void loadMemoryData() {
@@ -196,6 +234,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     this.memoryImageGrid.invalidateViews();
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
   }
+
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
     return calendar.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -275,6 +314,24 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
           public void onPositive(MaterialDialog dialog) {
             super.onPositive(dialog);
             new TaskDeleteMemories(getActivity(), listener).execute(memoryID);
+          }
+        })
+        .show();
+  }
+
+  private void deleteSelectedImages(){
+    // TODO Extract string resources
+    new MaterialDialog.Builder(getActivity())
+        .title("Delete images?")
+        .content("Deleted images cannot be recovered.")
+        .negativeText("Cancel")
+        .positiveText("Delete")
+        .callback(new MaterialDialog.ButtonCallback() {
+          @Override
+          public void onPositive(MaterialDialog dialog) {
+            super.onPositive(dialog);
+            // TODO implement delete images logic
+            Toast.makeText(getActivity(), "Images deleted", Toast.LENGTH_SHORT).show();
           }
         })
         .show();

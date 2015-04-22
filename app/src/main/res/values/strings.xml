@@ -16,4 +16,5 @@
     <string name="memory_viewer_description_content">Memory Description</string>
 
     <string name="memoy_save_progress_dialog">Saving memory...</string>
+    <string name="memory_viewer_action_mode_delete_images">Delete selected images</string>
 </resources>

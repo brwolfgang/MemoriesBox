@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:memoriesbox="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/memory_viewer_action_mode_delete_image"
+          android:icon="@drawable/ic_action_discard"
+          android:title="@string/memory_viewer_action_mode_delete_images"
+          memoriesbox:showAsAction="ifRoom"/>
+</menu>
