@@ -74,17 +74,20 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   }
 
   public void open() {
-    try {
-      database = this.getWritableDatabase();
-      Log.i(TAG, "Database was opened");
-    } catch (Exception e) {
-      e.getCause();
-    }
+    if (database == null || !database.isOpen())
+      try {
+        database = this.getWritableDatabase();
+        Log.i(TAG, "Database was opened");
+      } catch (Exception e) {
+        e.getCause();
+      }
   }
 
   public void close() {
-    database.close();
-    Log.i(TAG, "Database was closed");
+    if (database != null && database.isOpen()) {
+      database.close();
+      Log.i(TAG, "Database was closed");
+    }
   }
 
   public Memory createMemory(String title, String content, String date, String time) {
@@ -154,9 +157,16 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
 
   public void deleteMemory(Long memoryID) {
     this.open();
+
+// TODO uncoment this before publishing
+//    LinkedList<MemoryImage> images = getImagesFromMemory(memoryID);
+//    for(MemoryImage image : images)
+//      deleteImage(image.getImageID());
+
     database.delete(MEMORY_TABLE_NAME, MEMORY_COLUMN_ID + " = " + memoryID, null);
-    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID, null);
     Log.i(TAG, "Memory id " + memoryID + " deleted");
+    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID, null);
+    Log.i(TAG, "Images from memory id " + memoryID + " deleted");
     this.close();
   }
 
@@ -170,6 +180,7 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   public Cursor getAllMemories() {
     this.open();
     Cursor cursor = database.query(MEMORY_TABLE_NAME, allMemoryColumns, null, null, null, null, null);
+    Log.i(TAG, "All memories were retrieved");
     cursor.moveToFirst();
     this.close();
     return cursor;
@@ -230,14 +241,14 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   }
 
   public void dropMemoriesTable() {
-      this.open();
-      database.execSQL("drop table " + MEMORY_TABLE_NAME);
-      this.close();
+    this.open();
+    database.execSQL("drop table " + MEMORY_TABLE_NAME);
+    this.close();
   }
 
   public void dropImagesTable() {
-      this.open();
-      database.execSQL("drop table " + IMAGE_TABLE_NAME);
-      this.close();
+    this.open();
+    database.execSQL("drop table " + IMAGE_TABLE_NAME);
+    this.close();
   }
 }
