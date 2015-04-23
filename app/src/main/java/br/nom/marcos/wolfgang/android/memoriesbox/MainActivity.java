@@ -10,9 +10,11 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 
-public class MainActivity extends ActionBarActivity implements MemoryListFragment.MemoryListFragmentListener,
-    MemoryDetailsViewerFragment.MemoryDetailsViewerFragmentListener, DatePickerDialog.OnDateSetListener,
-    TimePickerDialog.OnTimeSetListener, TaskDeleteMemories.TaskDeleteMemoriesListener{
+public class MainActivity extends ActionBarActivity implements
+    MemoryListFragment.MemoryListFragmentListener,
+    DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener,
+    TaskDeleteMemories.TaskDeleteMemoriesListener{
 
   private static final String TAG = "MainActivity";
   private FragmentManager fragmentManager;
@@ -25,11 +27,6 @@ public class MainActivity extends ActionBarActivity implements MemoryListFragmen
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     initResources();
-  }
-
-  @Override
-  public void onMemorySaved() {
-    loadMemoryListView();
   }
 
   @Override

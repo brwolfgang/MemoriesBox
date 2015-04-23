@@ -45,8 +45,9 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   private TextView memoryDate;
   private TextView memoryTime;
   private GridView memoryImageGrid;
-  private Memory memory;
+  private Memory currentMemory;
   private MemoryDetailsViewerFragmentListener listener;
+  private MemoryImageGridAdapter mMemoryImageGridAdapter;
   private Uri capturedImageURI;
   private ActionMode mActionMode;
   private AbsListView.MultiChoiceModeListener imageGridMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
@@ -83,7 +84,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
     }
   };
-  private MemoryImageGridAdapter mMemoryImageGridAdapter;
 
   @Nullable
   @Override
@@ -91,16 +91,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements
     View view = inflater.inflate(R.layout.fragment_memory_viewer, container, false);
     setHasOptionsMenu(true);
     return view;
-  }
-
-  @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-    try {
-      listener = (MemoryDetailsViewerFragmentListener) activity;
-    } catch (ClassCastException e) {
-      throw new ClassCastException(activity.getClass() + " must implement MemoryDetailsViewerFragmentListener");
-    }
   }
 
   @Override
@@ -117,7 +107,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
       if(id == -1) {
         cleanMemoryDetailsViewerFragment();
       }else{
-        memory = new MemoryDatabaseHandler(getActivity().getApplicationContext())
+        currentMemory = new MemoryDatabaseHandler(getActivity().getApplicationContext())
             .retrieveMemory(getArguments().getLong("memoryID"));
         loadMemoryData();
       }
@@ -181,19 +171,19 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
   @Override
   public void onMemorySaved(Memory memory) {
-    this.memory = memory;
+    this.currentMemory = memory;
     Toast.makeText(getActivity(), "The memory was saved", Toast.LENGTH_LONG).show();
   }
 
   @Override
   public void onImagesRetrieved(LinkedList<MemoryImage> images) {
-    memory.setImageList(images);
+    currentMemory.setImageList(images);
 //    loadMemoryImages();
   }
 
   @Override
   public void onImageInserted(MemoryImage memoryImage) {
-    memory.getImageList().add(memoryImage);
+    currentMemory.getImageList().add(memoryImage);
     loadMemoryImages();
   }
 
@@ -232,17 +222,17 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   }
 
   private void loadMemoryData() {
-    this.memoryTitle.setText(memory.getTitle());
-    this.memoryContent.setText(memory.getContent());
-    this.memoryDate.setText(memory.getDate());
-    this.memoryTime.setText(memory.getTime());
+    this.memoryTitle.setText(currentMemory.getTitle());
+    this.memoryContent.setText(currentMemory.getContent());
+    this.memoryDate.setText(currentMemory.getDate());
+    this.memoryTime.setText(currentMemory.getTime());
     loadMemoryImages();
 
-    Log.i(TAG, "Memory ID " + memory.getId() + " data loaded");
+    Log.i(TAG, "Memory ID " + currentMemory.getId() + " data loaded");
   }
 
   private void loadMemoryImages(){
-    mMemoryImageGridAdapter = new MemoryImageGridAdapter(getActivity(), memory.getImageList());
+    mMemoryImageGridAdapter = new MemoryImageGridAdapter(getActivity(), currentMemory.getImageList());
     this.memoryImageGrid.invalidateViews();
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
   }
@@ -287,20 +277,20 @@ public class MemoryDetailsViewerFragment extends Fragment implements
     }
 
     if (title.length() > 0 && content.length() > 0) {
-      if (memory == null)
-        memory = new Memory();
+      if (currentMemory == null)
+        currentMemory = new Memory();
 
-      memory.setTitle(title);
-      memory.setContent(content);
-      memory.setDate(date);
-      memory.setTime(time);
+      currentMemory.setTitle(title);
+      currentMemory.setContent(content);
+      currentMemory.setDate(date);
+      currentMemory.setTime(time);
 
-      new TaskSaveMemory(getActivity(), this).execute(memory);
+      new TaskSaveMemory(getActivity(), this).execute(currentMemory);
     }
   }
 
   public void cleanMemoryDetailsViewerFragment(){
-    this.memory = null;
+    this.currentMemory = null;
     this.memoryTitle.setText("");
     this.memoryContent.setText("");
     this.memoryDate.setText(getCurrentDate());
@@ -314,7 +304,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
         (TaskDeleteMemories.TaskDeleteMemoriesListener) getActivity();
 
     final long[] memoryID = new long[1];
-    memoryID[0] = memory != null ? memory.getId() : 0;
+    memoryID[0] = currentMemory != null ? currentMemory.getId() : 0;
 
     // TODO extract string resources
     new MaterialDialog.Builder(getActivity())
@@ -354,7 +344,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
   private void insertImageOnMemory(Uri imageURI){
     MemoryImage image = new MemoryImage();
-    image.setMemoryID(memory.getId());
+    image.setMemoryID(currentMemory.getId());
     image.setImagePath(
         ImageCaptureUtil.getRealPathFromURI(getActivity(), imageURI)
     );
