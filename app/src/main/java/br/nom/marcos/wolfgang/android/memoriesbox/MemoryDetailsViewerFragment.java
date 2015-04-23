@@ -104,9 +104,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
     super.onResume();
     if(getArguments() != null) {
       Long id = getArguments().getLong("memoryID");
-      if(id == -1) {
-        cleanMemoryDetailsViewerFragment();
-      }else{
+      if(id != -1) {
         currentMemory = new MemoryDatabaseHandler(getActivity().getApplicationContext())
             .retrieveMemory(getArguments().getLong("memoryID"));
         loadMemoryData();
@@ -237,7 +235,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
   }
 
-
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
     return calendar.get(Calendar.DAY_OF_MONTH) + "/" +
@@ -271,32 +268,21 @@ public class MemoryDetailsViewerFragment extends Fragment implements
     String time = memoryTime.getText().toString();
 
     // TODO Remove this before publishing
-    if (title.length() == 0) {
-      title = "Example text";
-      content = "Example content";
-    }
+    if (title.length() == 0)
+      title = "No Title";
+    if (content.length() == 0)
+      content = "No Content";
 
-    if (title.length() > 0 && content.length() > 0) {
-      if (currentMemory == null)
-        currentMemory = new Memory();
+    if (currentMemory == null)
+      currentMemory = new Memory();
 
-      currentMemory.setTitle(title);
-      currentMemory.setContent(content);
-      currentMemory.setDate(date);
-      currentMemory.setTime(time);
+    currentMemory.setTitle(title);
+    currentMemory.setContent(content);
+    currentMemory.setDate(date);
+    currentMemory.setTime(time);
+    currentMemory.setImageList(new LinkedList<MemoryImage>());
 
-      new TaskSaveMemory(getActivity(), this).execute(currentMemory);
-    }
-  }
-
-  public void cleanMemoryDetailsViewerFragment(){
-    this.currentMemory = null;
-    this.memoryTitle.setText("");
-    this.memoryContent.setText("");
-    this.memoryDate.setText(getCurrentDate());
-    this.memoryTime.setText(getCurrentTime());
-    this.memoryImageGrid.setAdapter(null);
-    Log.i(TAG, "Cleaned up for new use");
+    new TaskSaveMemory(getActivity(), this).execute(currentMemory);
   }
 
   private void deleteMemory() {
@@ -359,6 +345,9 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   private class PickImageCallback implements MaterialDialog.ListCallback{
     @Override
     public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+      if (currentMemory == null)
+        saveMemory();
+
       switch (i) {
         case 0:
           capturedImageURI = ImageCaptureUtil.createTemporaryImageFile();

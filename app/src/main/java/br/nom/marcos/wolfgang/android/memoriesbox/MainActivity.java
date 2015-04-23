@@ -58,7 +58,6 @@ public class MainActivity extends ActionBarActivity implements
   private void initResources() {
     fragmentManager = getSupportFragmentManager();
     memoryListFragment = new MemoryListFragment();
-    memoryDetailsViewer = new MemoryDetailsViewerFragment();
     loadMemoryListView();
   }
 
@@ -73,6 +72,7 @@ public class MainActivity extends ActionBarActivity implements
     fragmentTransaction = fragmentManager.beginTransaction();
     Bundle args = new Bundle();
     args.putLong("memoryID", id != null ? id : -1);
+    memoryDetailsViewer = new MemoryDetailsViewerFragment();
     memoryDetailsViewer.setArguments(args);
     fragmentTransaction.replace(R.id.main_fragment_container, memoryDetailsViewer);
     fragmentTransaction.addToBackStack(memoryDetailsViewer.getClass().getName());
