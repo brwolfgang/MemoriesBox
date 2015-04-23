@@ -29,10 +29,26 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-public class MemoryDetailsViewerFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskSaveMemory.TaskSaveMemoryListener, TaskRetrieveImages.TaskRetrieveImagesListener,
-    TaskInsertImage.TaskInsertImageListener{
+public class MemoryDetailsViewerFragment extends Fragment implements
+    DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener,
+    TaskSaveMemory.TaskSaveMemoryListener,
+    TaskRetrieveImages.TaskRetrieveImagesListener,
+    TaskInsertImage.TaskInsertImageListener,
+    TaskDeleteImages.TaskDeleteImagesListener{
 
   private static final String TAG = "MemoryDetailsViewer";
+  private final int pickImageCameraCode = 0;
+  private final int pickImageGalleryCode = 1;
+  private EditText memoryTitle;
+  private EditText memoryContent;
+  private TextView memoryDate;
+  private TextView memoryTime;
+  private GridView memoryImageGrid;
+  private Memory memory;
+  private MemoryDetailsViewerFragmentListener listener;
+  private Uri capturedImageURI;
+  private ActionMode mActionMode;
   private AbsListView.MultiChoiceModeListener imageGridMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
@@ -42,6 +58,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
       MenuInflater inflater = mode.getMenuInflater();
       inflater.inflate(R.menu.memory_viewer_action_mode, menu);
+      mActionMode = mode;
       Log.i(TAG, "ActionMode created");
       return true;
     }
@@ -66,16 +83,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
 
     }
   };
-  private final int pickImageCameraCode = 0;
-  private final int pickImageGalleryCode = 1;
-  private EditText memoryTitle;
-  private EditText memoryContent;
-  private TextView memoryDate;
-  private TextView memoryTime;
-  private GridView memoryImageGrid;
-  private Memory memory;
-  private MemoryDetailsViewerFragmentListener listener;
-  private Uri capturedImageURI;
   private MemoryImageGridAdapter mMemoryImageGridAdapter;
 
   @Nullable
@@ -175,7 +182,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   @Override
   public void onMemorySaved(Memory memory) {
     this.memory = memory;
-    listener.onMemorySaved();
+    Toast.makeText(getActivity(), "The memory was saved", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -188,6 +195,11 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   public void onImageInserted(MemoryImage memoryImage) {
     memory.getImageList().add(memoryImage);
     loadMemoryImages();
+  }
+
+  @Override
+  public void onImagesDeleted() {
+    // Todo retrieve the new set of images and modify the current Memory object to hold it
   }
 
   private void initResources() {
@@ -234,6 +246,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
     this.memoryImageGrid.invalidateViews();
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
   }
+
 
   private String getCurrentDate() {
     Calendar calendar = Calendar.getInstance();
@@ -320,6 +333,8 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   }
 
   private void deleteSelectedImages(){
+    final TaskDeleteImages.TaskDeleteImagesListener listener = this;
+
     // TODO Extract string resources
     new MaterialDialog.Builder(getActivity())
         .title("Delete images?")
@@ -330,8 +345,8 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
           @Override
           public void onPositive(MaterialDialog dialog) {
             super.onPositive(dialog);
-            // TODO implement delete images logic
-            Toast.makeText(getActivity(), "Images deleted", Toast.LENGTH_SHORT).show();
+            new TaskDeleteImages(getActivity(), listener).execute(memoryImageGrid.getCheckedItemIds());
+            mActionMode.finish();
           }
         })
         .show();
@@ -340,7 +355,9 @@ public class MemoryDetailsViewerFragment extends Fragment implements DatePickerD
   private void insertImageOnMemory(Uri imageURI){
     MemoryImage image = new MemoryImage();
     image.setMemoryID(memory.getId());
-    image.setImagePath(imageURI.toString());
+    image.setImagePath(
+        ImageCaptureUtil.getRealPathFromURI(getActivity(), imageURI)
+    );
 
     new TaskInsertImage(getActivity(), this).execute(image);
   }
