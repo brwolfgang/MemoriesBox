@@ -77,13 +77,12 @@
     <GridView
         android:id="@+id/memory_viewer_grid"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_below="@id/memory_viewer_date_pick_group"
         android:columnWidth="90dp"
         android:gravity="center"
         android:horizontalSpacing="10dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp"
-        />
+        android:verticalSpacing="10dp"/>
 </RelativeLayout>
