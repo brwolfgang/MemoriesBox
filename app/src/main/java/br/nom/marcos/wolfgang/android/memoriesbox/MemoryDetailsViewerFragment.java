@@ -349,7 +349,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
       switch (i) {
         case 0:
-          capturedImageURI = ImageCaptureUtil.createTemporaryImageFile();
+          capturedImageURI = ImageCaptureUtil.createTemporaryImageFile(getActivity());
           if (capturedImageURI != null){
             startActivityForResult(
                 ImageCaptureUtil.getCameraIntent(

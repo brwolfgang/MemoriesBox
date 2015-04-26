@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -31,16 +30,15 @@ public class ImageCaptureUtil {
     return actionGallery;
   }
 
-  public static Uri createTemporaryImageFile(){
+  public static Uri createTemporaryImageFile(Context context){
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
     String imageFileName = "MB_" + timeStamp;
 
-    File imageTempFile = null;
     try {
-      imageTempFile = File.createTempFile(
+      File imageTempFile = File.createTempFile(
           imageFileName,  // File name prefix
           ".jpg",         // File name suffix
-          getMemoriesBoxAlbumFolder()  // Directory where the file is going to be saved
+          getMemoriesBoxAlbumFolder(context)  // Directory where the file is going to be saved
       );
       Log.i(TAG, "New Image path " + imageTempFile.toString());
       return Uri.fromFile(imageTempFile);
@@ -51,13 +49,12 @@ public class ImageCaptureUtil {
     return null;
   }
 
-  public static File getMemoriesBoxAlbumFolder() {
-    File storageDir = Environment.getExternalStoragePublicDirectory(
-        Environment.DIRECTORY_PICTURES);
+  public static File getMemoriesBoxAlbumFolder(Context context) {
+    File storageDir = context.getExternalCacheDir();
 
     Log.i(TAG, "Storage Dir " + storageDir.toString());
 
-    File memoriesBoxAlbum = new File(storageDir.getPath() + "/MemoryBox/");
+    File memoriesBoxAlbum = new File(storageDir.getPath() + "/images/");
     memoriesBoxAlbum.mkdir();
 
     Log.i(TAG, "MemoryBox Dir " + memoriesBoxAlbum.toString());
