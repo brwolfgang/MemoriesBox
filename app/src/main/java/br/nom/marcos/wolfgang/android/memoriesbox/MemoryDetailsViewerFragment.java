@@ -154,6 +154,12 @@ public class MemoryDetailsViewerFragment extends Fragment implements
           insertImageOnMemory(data.getData());
           break;
       }
+    if (resultCode == Activity.RESULT_CANCELED) {
+      Log.i(TAG, "User canceled image picking");
+      if (requestCode == pickImageCameraCode)
+        ImageCaptureUtil.deleteTempFile(getActivity(), capturedImageURI);
+    }
+
   }
 
   @Override

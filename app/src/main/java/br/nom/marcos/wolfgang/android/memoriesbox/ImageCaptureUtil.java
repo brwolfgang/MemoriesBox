@@ -75,4 +75,11 @@ public class ImageCaptureUtil {
     }
     return result;
   }
+
+  public static void deleteTempFile(Context context, Uri fileURI){
+    if (new File(getRealPathFromURI(context, fileURI)).delete())
+      Log.i(TAG, "Temp file deleted");
+    else
+      Log.i(TAG, "Temp file WAS NOT deleted");
+  }
 }
