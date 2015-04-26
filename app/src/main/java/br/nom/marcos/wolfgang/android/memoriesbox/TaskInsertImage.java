@@ -31,6 +31,8 @@ public class TaskInsertImage extends AsyncTask<MemoryImage, Void, Void> {
     MemoryDatabaseHandler mds = new MemoryDatabaseHandler(mContext);
     MemoryImage memoryImage = params[0];
 
+    mds.insertImage(memoryImage);
+
     return null;
   }
 
