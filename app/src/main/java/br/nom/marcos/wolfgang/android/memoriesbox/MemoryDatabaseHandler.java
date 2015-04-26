@@ -214,6 +214,7 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   }
 
   public LinkedList<MemoryImage> getImagesFromMemory(Long memoryID){
+    this.open();
     Cursor imageCursor = database.query(IMAGE_TABLE_NAME,
         allImageColumns, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID,
         null, null, null, null);
@@ -223,6 +224,7 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
     Log.i(TAG, "Total images loaded for memory " + memoryID + ": " + memoryImages.size());
 
     imageCursor.close();
+    this.close();
 
     return memoryImages;
   }
