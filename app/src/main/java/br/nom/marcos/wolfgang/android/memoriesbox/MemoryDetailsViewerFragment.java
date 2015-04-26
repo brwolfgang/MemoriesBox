@@ -176,18 +176,17 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   @Override
   public void onImagesRetrieved(LinkedList<MemoryImage> images) {
     currentMemory.setImageList(images);
-//    loadMemoryImages();
-  }
-
-  @Override
-  public void onImageInserted(MemoryImage memoryImage) {
-    currentMemory.getImageList().add(memoryImage);
     loadMemoryImages();
   }
 
   @Override
+  public void onImageInserted() {
+    new TaskRetrieveImages(getActivity(), this).execute(currentMemory.getId());
+  }
+
+  @Override
   public void onImagesDeleted() {
-    // Todo retrieve the new set of images and modify the current Memory object to hold it
+    new TaskRetrieveImages(getActivity(), this).execute(currentMemory.getId());
   }
 
   private void initResources() {
@@ -231,8 +230,8 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
   private void loadMemoryImages(){
     mMemoryImageGridAdapter = new MemoryImageGridAdapter(getActivity(), currentMemory.getImageList());
-    this.memoryImageGrid.invalidateViews();
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
+    this.memoryImageGrid.invalidate();
   }
 
   private String getCurrentDate() {

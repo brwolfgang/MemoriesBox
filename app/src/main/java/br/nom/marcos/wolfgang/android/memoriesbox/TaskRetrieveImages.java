@@ -1,26 +1,24 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
 
 import java.util.LinkedList;
 
-/**
- * Created by Wolfgang Marcos on 20/03/2015.
- */
-public class TaskRetrieveImages extends AsyncTask<Bundle, Void, LinkedList<MemoryImage>> {
+public class TaskRetrieveImages extends AsyncTask<Long, Void, LinkedList<MemoryImage>> {
 
-  TaskRetrieveImagesListener listener;
+  private TaskRetrieveImagesListener listener;
+  private Context mContext;
 
-  public TaskRetrieveImages(TaskRetrieveImagesListener listener) {
+  public TaskRetrieveImages(Context context, TaskRetrieveImagesListener listener) {
+    this.mContext = context;
     this.listener = listener;
   }
 
   @Override
-  protected LinkedList<MemoryImage> doInBackground(Bundle... params) {
-    LinkedList<MemoryImage> images;
-    MemoryDatabaseHandler mds = (MemoryDatabaseHandler) params[0].get("mds");
-    Long memoryID = (Long) params[0].get("memoryID");
+  protected LinkedList<MemoryImage> doInBackground(Long... params) {
+    MemoryDatabaseHandler mds = new MemoryDatabaseHandler(mContext);
+    Long memoryID = params[0];
 
     return mds.getImagesFromMemory(memoryID);
   }
