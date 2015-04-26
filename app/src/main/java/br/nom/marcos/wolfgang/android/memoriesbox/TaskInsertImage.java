@@ -5,10 +5,7 @@ import android.os.AsyncTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-/**
- * Created by Wolfgang on 04/04/2015.
- */
-public class TaskInsertImage extends AsyncTask<MemoryImage, Void, MemoryImage> {
+public class TaskInsertImage extends AsyncTask<MemoryImage, Void, Void> {
 
   private Context mContext;
   private MaterialDialog mMaterialProgressDialog;
@@ -30,22 +27,22 @@ public class TaskInsertImage extends AsyncTask<MemoryImage, Void, MemoryImage> {
   }
 
   @Override
-  protected MemoryImage doInBackground(MemoryImage... params) {
+  protected Void doInBackground(MemoryImage... params) {
     MemoryDatabaseHandler mds = new MemoryDatabaseHandler(mContext);
     MemoryImage memoryImage = params[0];
 
-    return mds.insertImage(memoryImage);
+    return null;
   }
 
   @Override
-  protected void onPostExecute(MemoryImage memoryImage) {
+  protected void onPostExecute(Void avoid) {
     if(mMaterialProgressDialog.isShowing())
       mMaterialProgressDialog.dismiss();
 
-    listener.onImageInserted(memoryImage);
+    listener.onImageInserted();
   }
 
   public interface TaskInsertImageListener {
-    public void onImageInserted(MemoryImage memoryImage);
+    public void onImageInserted();
   }
 }
