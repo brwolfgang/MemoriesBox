@@ -8,7 +8,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,6 +34,7 @@ public class ImageCaptureUtil {
   }
 
   public static Uri createTemporaryImageFile(Context context){
+    Log.i(TAG, "Creating temporary internal file");
     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
     String imageFileName = "MB_" + timeStamp;
 
@@ -81,5 +85,33 @@ public class ImageCaptureUtil {
       Log.i(TAG, "Temp file deleted");
     else
       Log.i(TAG, "Temp file WAS NOT deleted");
+  }
+
+  public static Uri importFile(Context context, Uri image){
+    Log.i(TAG, "Importing image to app internal memory");
+    Uri outputFileUri = null;
+
+    try {
+      outputFileUri = createTemporaryImageFile(context);
+
+      FileInputStream inputStream = new FileInputStream(
+          new File(getRealPathFromURI(context, image)));
+      FileOutputStream outputStream = new FileOutputStream(
+          new File(getRealPathFromURI(context, outputFileUri)));
+
+      FileChannel inputChannel = inputStream.getChannel();
+      FileChannel outputChannel = outputStream.getChannel();
+
+      inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+
+      inputStream.close();
+      outputStream.close();
+
+      Log.i(TAG, "Import finished");
+    } catch (Exception e) {
+      Log.i(TAG, "Importing failed");
+      e.printStackTrace();
+    }
+    return outputFileUri;
   }
 }

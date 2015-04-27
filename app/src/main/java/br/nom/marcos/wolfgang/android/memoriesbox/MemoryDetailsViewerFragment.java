@@ -151,7 +151,8 @@ public class MemoryDetailsViewerFragment extends Fragment implements
           break;
         case pickImageGalleryCode:
           Log.i(TAG,"Image from gallery received");
-          insertImageOnMemory(data.getData());
+          Uri importedImage = ImageCaptureUtil.importFile(getActivity(), data.getData());
+          insertImageOnMemory(importedImage);
           break;
       }
     if (resultCode == Activity.RESULT_CANCELED) {
