@@ -46,8 +46,6 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   private TextView memoryTime;
   private GridView memoryImageGrid;
   private Memory currentMemory;
-  private MemoryDetailsViewerFragmentListener listener;
-  private MemoryImageGridAdapter mMemoryImageGridAdapter;
   private Uri capturedImageURI;
   private ActionMode mActionMode;
   private AbsListView.MultiChoiceModeListener imageGridMultiChoiceModeListener = new AbsListView.MultiChoiceModeListener() {
@@ -81,7 +79,7 @@ public class MemoryDetailsViewerFragment extends Fragment implements
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-
+      mActionMode = null;
     }
   };
 
@@ -236,7 +234,8 @@ public class MemoryDetailsViewerFragment extends Fragment implements
   }
 
   private void loadMemoryImages(){
-    mMemoryImageGridAdapter = new MemoryImageGridAdapter(getActivity(), currentMemory.getImageList());
+    MemoryImageGridAdapter mMemoryImageGridAdapter =
+    		new MemoryImageGridAdapter(getActivity(), currentMemory.getImageList());
     this.memoryImageGrid.setAdapter(mMemoryImageGridAdapter);
     this.memoryImageGrid.invalidate();
   }

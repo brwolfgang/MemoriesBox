@@ -1,9 +1,11 @@
 package br.nom.marcos.wolfgang.android.memoriesbox;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -44,15 +46,20 @@ public class MemoryImageGridAdapter extends BaseAdapter {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ImageView imageView;
+    FrameLayout memoryImageFrame;
+    ViewHolder holder;
 
-    if (convertView == null){
-      imageView = new ImageView(context);
+    if (convertView != null){
+      memoryImageFrame = (FrameLayout) convertView;
+      holder = (ViewHolder) convertView.getTag();
     }else{
-      imageView = (ImageView) convertView;
+      memoryImageFrame = (FrameLayout) LayoutInflater.from(context).inflate(R.layout.memory_image_item, null);
+      holder = new ViewHolder();
+      holder.mainImage = (ImageView) memoryImageFrame.findViewById(R.id.memory_image_item_image);
+      holder.background = (ImageView) memoryImageFrame.findViewById(R.id.memory_image_item_background);
+      holder.selectionIcon = (ImageView) memoryImageFrame.findViewById(R.id.memory_image_item_select_icon);
+      memoryImageFrame.setTag(holder);
     }
-    // TODO remove indicators before publishing
-    Picasso.with(context).setIndicatorsEnabled(true);
 
     Picasso.with(context)
         .load(new File(images.get(position).getImagePath()))
@@ -60,7 +67,18 @@ public class MemoryImageGridAdapter extends BaseAdapter {
         .centerCrop()
         .placeholder(R.drawable.loading)
         .error(R.drawable.error)
-        .into(imageView);
-    return imageView;
+        .into(holder.mainImage);
+
+    Picasso.with(context)
+        .load(R.drawable.ic_action_accept)
+        .into(holder.selectionIcon);
+
+    return memoryImageFrame;
+  }
+
+  static class ViewHolder{
+    ImageView mainImage;
+    ImageView background;
+    ImageView selectionIcon;
   }
 }
