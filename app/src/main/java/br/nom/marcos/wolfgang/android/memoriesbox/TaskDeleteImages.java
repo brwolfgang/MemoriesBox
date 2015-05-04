@@ -6,8 +6,6 @@ import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.io.File;
-
 public class TaskDeleteImages extends AsyncTask<long[], Void, Void> {
 
   private final String TAG = "TaskDeleteImages";
@@ -37,14 +35,7 @@ public class TaskDeleteImages extends AsyncTask<long[], Void, Void> {
 
     for(long id : params[0]) {
       MemoryImage image = mds.retrieveImage(id);
-      File imageFile = new File(image.getImagePath());
-
-      if (imageFile.delete())
-        Log.i(TAG, "Image " + image.getImagePath() + " deleted");
-      else
-        Log.i(TAG, "Image " + image.getImagePath() + " NOT deleted");
-
-      mds.deleteImage(id);
+      mds.deleteImage(image);
     }
 
     return null;

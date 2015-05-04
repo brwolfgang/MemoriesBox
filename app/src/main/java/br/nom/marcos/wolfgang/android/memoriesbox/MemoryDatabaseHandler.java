@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.File;
 import java.util.LinkedList;
 
 /**
@@ -21,6 +22,10 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   public static final String MEMORY_COLUMN_CONTENT = "content";
   public static final String MEMORY_COLUMN_DATE = "date";
   public static final String MEMORY_COLUMN_TIME = "time";
+  public static final String IMAGE_TABLE_NAME =  "image";
+  public static final String IMAGE_COLUMN_ID = "_id";
+  public static final String IMAGE_COLUMN_MEMORY_ID = "memory_id";
+  public static final String IMAGE_COLUMN_NAME = "image_path";
   private static final String CREATE_TABLE_MEMORY = "CREATE TABLE "
       + MEMORY_TABLE_NAME + "("
       + MEMORY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -28,26 +33,20 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
       + MEMORY_COLUMN_CONTENT + " TEXT NOT NULL, "
       + MEMORY_COLUMN_DATE + " TEXT NOT NULL, "
       + MEMORY_COLUMN_TIME + " TEXT NOT NULL);";
-  private String[] allMemoryColumns = {MEMORY_COLUMN_ID,
-      MEMORY_COLUMN_TITLE,
-      MEMORY_COLUMN_CONTENT,
-      MEMORY_COLUMN_DATE,
-      MEMORY_COLUMN_TIME};
-
-  public static final String IMAGE_TABLE_NAME =  "image";
-  public static final String IMAGE_COLUMN_ID = "_id";
-  public static final String IMAGE_COLUMN_MEMORY_ID = "memory_id";
-  public static final String IMAGE_COLUMN_NAME = "image_path";
   private static final String CREATE_TABLE_IMAGES = "CREATE TABLE "
       + IMAGE_TABLE_NAME + "("
       + IMAGE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
       + IMAGE_COLUMN_MEMORY_ID + " INTEGER NOT NULL, "
       + IMAGE_COLUMN_NAME+ " TEXT NOT NULL);";
+  private static final String TAG = "MemoryDatabaseHandler";
+  private String[] allMemoryColumns = {MEMORY_COLUMN_ID,
+      MEMORY_COLUMN_TITLE,
+      MEMORY_COLUMN_CONTENT,
+      MEMORY_COLUMN_DATE,
+      MEMORY_COLUMN_TIME};
   private String[] allImageColumns = {IMAGE_COLUMN_ID,
       IMAGE_COLUMN_MEMORY_ID,
       IMAGE_COLUMN_NAME};
-
-  private static final String TAG = "MemoryDatabaseHandler";
   private SQLiteDatabase database;
 
   public MemoryDatabaseHandler(Context context) {
@@ -84,8 +83,9 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   }
 
   public void close() {
-    if (database != null && database.isOpen()) {
+    if (database != null) {
       database.close();
+      database = null;
       Log.i(TAG, "Database was closed");
     }
   }
@@ -156,25 +156,30 @@ public class MemoryDatabaseHandler extends SQLiteOpenHelper{
   }
 
   public void deleteMemory(Long memoryID) {
+    LinkedList<MemoryImage> images = getImagesFromMemory(memoryID);
+
     this.open();
-
-// TODO uncoment this before publishing
-//    LinkedList<MemoryImage> images = getImagesFromMemory(memoryID);
-//    for(MemoryImage image : images)
-//      deleteImage(image.getImageID());
-
     database.delete(MEMORY_TABLE_NAME, MEMORY_COLUMN_ID + " = " + memoryID, null);
-    Log.i(TAG, "Memory id " + memoryID + " deleted");
-    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_MEMORY_ID + " = " + memoryID, null);
-    Log.i(TAG, "Images from memory id " + memoryID + " deleted");
+    Log.i(TAG, "Memory id " + memoryID + " deleted from database");
     this.close();
+
+    for(MemoryImage image : images) {
+      deleteImage(image);
+    }
   }
 
-  public void deleteImage(Long imageID){
+  public void deleteImage(MemoryImage image){
     this.open();
-    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_ID + " = " + imageID, null);
-    Log.i(TAG, "Image id " + imageID + " deleted");
+    database.delete(IMAGE_TABLE_NAME, IMAGE_COLUMN_ID + " = " + image.getImageID(), null);
+    Log.i(TAG, "Image id " + image.getImageID() + " deleted from database");
     this.close();
+
+    File imageFile = new File(image.getImagePath());
+
+    if (imageFile.delete())
+      Log.i(TAG, "Image " + image.getImagePath() + " deleted from storage");
+    else
+      Log.i(TAG, "Image " + image.getImagePath() + " NOT deleted from storage");
   }
 
   public Cursor getAllMemories() {
